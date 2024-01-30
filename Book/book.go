@@ -16,7 +16,8 @@ type Booking struct {
 	StudentName  string `json:"Student Name"`
 	StudentEmail string `json:"Student Email"`
 	LessonID     string `json:"Lesson ID"` //link to schedule details
-	// add lesson venue
+	LessonName   string `json:"LessonName"`
+	Location     string `json:"Location"`
 }
 
 var (
