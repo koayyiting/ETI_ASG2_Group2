@@ -1,3 +1,15 @@
+const sign_in_btn = document.querySelector("#sign-in-btn");
+const sign_up_btn = document.querySelector("#sign-up-btn");
+const container = document.querySelector(".container");
+
+sign_up_btn.addEventListener("click", () => {
+  container.classList.add("sign-up-mode");
+});
+
+sign_in_btn.addEventListener("click", () => {
+  container.classList.remove("sign-up-mode");
+});
+
 //tutor features
 function tutorSignup(){
     var request = new XMLHttpRequest();
@@ -5,20 +17,18 @@ function tutorSignup(){
 
     const curl = 'http://localhost:5211/api/v1/tutor';
 
-    const tutorUsername = form.elements['tutor_signup_username'].value;
+    const tutorEmail = form.elements['tutor_signup_email'].value;
     const tutorPassword = form.elements['tutor_signup_password'].value;
-    const tutorTitle = form.elements['tutor_signup_title'].value;
     const tutorFirstName = form.elements['tutor_signup_firstname'].value;
     const tutorLastName = form.elements['tutor_signup_lastname'].value;
 
-    console.log(tutorUsername);
+    console.log(tutorEmail);
     console.log(tutorPassword);
 
     request.open("POST", curl);
     request.send(JSON.stringify({
-        "tutorUsername": tutorUsername,
+        "tutorEmail": tutorEmail,
         "tutorPassword": tutorPassword, 
-        "tutorTitle": tutorTitle,
         "tutorFirstName": tutorFirstName,
         "tutorLastName": tutorLastName
         
@@ -31,12 +41,12 @@ function tutorSignup(){
 function tutorLogin(){
     var request = new XMLHttpRequest();
     const form = document.getElementById('tutorLoginForm');
-    const tutorUsername = form.elements['tutor_login_username'].value;
+    const tutorEmail = form.elements['tutor_login_email'].value;
     const tutorPassword = form.elements['tutor_login_password'].value;
-    console.log(tutorUsername);
+    console.log(tutorEmail);
     console.log(tutorPassword);
 
-    const curl = 'http://localhost:5211/api/v1/tutor?tutorUsername=' + encodeURIComponent(tutorUsername) + '&tutorPassword=' + encodeURIComponent(tutorPassword);
+    const curl = 'http://localhost:5211/api/v1/tutor?tutorEmail=' + encodeURIComponent(tutorEmail) + '&tutorPassword=' + encodeURIComponent(tutorPassword);
     console.log(curl);
 
     request.open("GET", curl);
@@ -48,7 +58,7 @@ function tutorLogin(){
         } else if (request.status === 401) {
           // Login failed, handle error
           form.reset();
-          document.getElementById('error-message').innerHTML = 'Incorrect Username or Password.';
+          document.getElementById('error-message').innerHTML = 'Incorrect Email or Password.';
         } else {
           // Handle other status codes or network errors
           document.getElementById('error-message').innerHTML = 'An error occurred. Please try again later.';

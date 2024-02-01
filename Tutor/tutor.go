@@ -15,11 +15,10 @@ import (
 
 type Tutor struct {
 	TutorID   int    `json:"tutorId"`
-	Username  string `json:"tutorUsername"`
-	Password  string `json:"tutorPassword"`
-	Title     string `json:"tutorTitle"`
 	FirstName string `json:"tutorFirstName"`
 	LastName  string `json:"tutorLastName"`
+	Email     string `json:"tutorEmail"`
+	Password  string `json:"tutorPassword"`
 }
 
 var (
@@ -68,14 +67,14 @@ func createTutorAccHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// // Insert the new tutor into the database
-	stmt, err := db.Prepare("INSERT INTO Tutor (TutorID, Username, Password, Title, FirstName, LastName) VALUES (?, ?, ?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO Tutor (TutorID, FirstName, LastName, Email, Password) VALUES (?, ?, ?, ?, ?)")
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(newTutor.TutorID, newTutor.Username, newTutor.Password, newTutor.Title, newTutor.FirstName, newTutor.LastName)
+	_, err = stmt.Exec(newTutor.TutorID, newTutor.FirstName, newTutor.LastName, newTutor.Email, newTutor.Password)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
@@ -86,18 +85,18 @@ func createTutorAccHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetTutorAccHandler(w http.ResponseWriter, r *http.Request) {
-	username := r.URL.Query().Get("tutorUsername")
+	email := r.URL.Query().Get("tutorEmail")
 	password := r.URL.Query().Get("tutorPassword")
 
-	if username == "" || password == "" {
-		http.Error(w, "Username and Password parameters are required", http.StatusBadRequest)
+	if email == "" || password == "" {
+		http.Error(w, "Email and Password parameters are required", http.StatusBadRequest)
 		return
 	}
 
 	var acc Tutor
-	err := db.QueryRow("SELECT TutorID, Username, Password, Title, FirstName, LastName FROM Tutor WHERE Username = ? AND Password = ?", username, password).Scan(&acc.TutorID, &acc.Username, &acc.Password, &acc.Title, &acc.FirstName, &acc.LastName)
+	err := db.QueryRow("SELECT TutorID, FirstName, LastName, Email, Password FROM Tutor WHERE Email = ? AND Password = ?", email, password).Scan(&acc.TutorID, &acc.FirstName, &acc.LastName, &acc.Email, &acc.Password)
 	if err == sql.ErrNoRows {
-		http.Error(w, "Invalid Username or Password", http.StatusNotFound)
+		http.Error(w, "Invalid Email or Password", http.StatusNotFound)
 		return
 	} else if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -127,14 +126,14 @@ func updateTutorProfileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Update the tutor's information in the database
-	stmt, err := db.Prepare("UPDATE Tutor SET Username=?, Password=?, Title=?, FirstName=?, LastName=? WHERE TutorID=?")
+	stmt, err := db.Prepare("UPDATE Tutor SET FirstName=?, LastName=?, Email=?, Password=? WHERE TutorID=?")
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(updatedTutor.Username, updatedTutor.Password, updatedTutor.Title, updatedTutor.FirstName, updatedTutor.LastName, tutorID)
+	_, err = stmt.Exec(updatedTutor.FirstName, updatedTutor.LastName, updatedTutor.Email, updatedTutor.Password, tutorID)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return

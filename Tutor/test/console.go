@@ -13,11 +13,10 @@ import (
 
 type Tutor struct {
 	TutorID   int    `json:"tutorId"`
-	Username  string `json:"tutorUsername"`
-	Password  string `json:"tutorPassword"`
-	Title     string `json:"tutorTitle"`
 	FirstName string `json:"tutorFirstName"`
 	LastName  string `json:"tutorLastName"`
+	Email     string `json:"tutorEmail"`
+	Password  string `json:"tutorPassword"`
 }
 
 func main() {
@@ -60,20 +59,17 @@ func createTutorAcc() {
 	var tutor Tutor
 	reader := bufio.NewReader(os.Stdin)
 	reader.ReadString('\n')
-	fmt.Print("Enter Username: ")
-	fmt.Scanf("%v", &tutor.Username)
-	reader.ReadString('\n')
-	fmt.Print("Enter Password: ")
-	fmt.Scanf("%v", &tutor.Password)
-	reader.ReadString('\n')
-	fmt.Print("Enter Title: ")
-	fmt.Scanf("%v", &tutor.Title)
-	reader.ReadString('\n')
 	fmt.Print("Enter Firstname: ")
 	fmt.Scanf("%v", &tutor.FirstName)
 	reader.ReadString('\n')
 	fmt.Print("Enter Lastname: ")
 	fmt.Scanf("%v", &tutor.LastName)
+	reader.ReadString('\n')
+	fmt.Print("Enter Email: ")
+	fmt.Scanf("%v", &tutor.Email)
+	reader.ReadString('\n')
+	fmt.Print("Enter Password: ")
+	fmt.Scanf("%v", &tutor.Password)
 
 	postBody, _ := json.Marshal(tutor)
 
@@ -96,14 +92,14 @@ func createTutorAcc() {
 
 func login() error {
 	var (
-		username string
+		email    string
 		password string
 	)
 	reader := bufio.NewReader(os.Stdin)
 
 	reader.ReadString('\n')
-	fmt.Print("Enter Username: ")
-	fmt.Scanf("%v", &username)
+	fmt.Print("Enter Email: ")
+	fmt.Scanf("%v", &email)
 
 	reader.ReadString('\n')
 	fmt.Print("Enter Password: ")
@@ -111,7 +107,7 @@ func login() error {
 
 	// Perform login check
 	client := &http.Client{}
-	if req, err := http.NewRequest(http.MethodGet, "http://localhost:5211/api/v1/tutor?tutorUsername="+username+"&tutorPassword="+password, nil); err == nil {
+	if req, err := http.NewRequest(http.MethodGet, "http://localhost:5211/api/v1/tutor?tutorEmail="+email+"&tutorPassword="+password, nil); err == nil {
 		if res, err := client.Do(req); err == nil {
 			defer res.Body.Close()
 
@@ -119,13 +115,13 @@ func login() error {
 				var tutor Tutor
 				err := json.NewDecoder(res.Body).Decode(&tutor)
 				if err == nil {
-					fmt.Printf("Welcome back, %s!\n", tutor.Username)
+					fmt.Printf("Welcome back, %s!\n", tutor.Email)
 					return nil
 				} else {
 					return fmt.Errorf("Error decoding response: %v", err)
 				}
 			} else {
-				return fmt.Errorf("Inavlid Username or Password")
+				return fmt.Errorf("Inavlid Email or Password")
 			}
 		} else {
 			return fmt.Errorf("Error making request: %v", err)

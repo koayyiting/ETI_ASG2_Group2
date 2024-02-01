@@ -6,15 +6,14 @@ USE tutor_db;
 
 CREATE TABLE IF NOT EXISTS Tutor (
 TutorID int NOT NULL AUTO_INCREMENT,
-Username varchar (50) NOT NULL,
-Password varchar (50) NOT NULL,
-Title ENUM('Mr.', 'Mrs.', 'Ms.', 'Mdm.', 'Dr.'),
 FirstName varchar (50) NOT NULL,
 LastName varchar (50) NOT NULL,
+Email varchar (50) NOT NULL,
+Password varchar (50) NOT NULL,
 PRIMARY KEY (`TutorID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO Tutor (TutorID, Username, Password, Title, FirstName, LastName)
-VALUES(1, 'Zi Yi', 'tutor1', 'Ms.', 'Zi Yi', 'Ng');
+INSERT INTO Tutor (TutorID, FirstName, LastName, Email, Password)
+VALUES(1, 'Zi Yi', 'Ng', 'ziyi@gmail.com', 'tutor1');
 
 SELECT * FROM Tutor;

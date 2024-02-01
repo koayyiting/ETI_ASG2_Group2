@@ -1,80 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>Sign up and Login Page</title>
-    <script src="javascript.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</head>
-<body>
-    <div class="container mt-5" style="padding:100px">
-        <nav>
-            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-              <button class="nav-link active" id="nav-login-tab" data-bs-toggle="tab" data-bs-target="#nav-login" type="button" role="tab" aria-controls="nav-login" aria-selected="true">Log In</button>
-              <button class="nav-link" id="nav-signup-tab" data-bs-toggle="tab" data-bs-target="#nav-signup" type="button" role="tab" aria-controls="nav-signup" aria-selected="false">Sign Up</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/64d58efce2.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="style.css" />
+    <title>Sign in & Sign up Form</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="forms-container">
+        <div class="signin-signup">
+          <form id="tutorLoginForm" class="sign-in-form">
+            <h2 class="title">Sign in</h2>
+            <div class="input-field">
+              <i class="fas fa-envelope"></i>
+              <input type="text" id="tutor_login_email" placeholder="Email" />
             </div>
-        </nav>
-        <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-login" role="tabpanel" aria-labelledby="nav-login-tab">
-                <div class="mx-5">
-                    <h4 class="mt-4">Tutor Log In</h4>
-                    <form id="tutorLoginForm">
-                        <div class="form-group">
-                            <label for="tutor_login_username">Username</label>
-                            <input type="text" class="form-control" id="tutor_login_username">
-                        </div> <br>
-                        <div class="form-group">
-                            <label for="tutor_login_password">Password</label>
-                            <input type="text" class="form-control" id="tutor_login_password">
-                        </div> 
-                        <p id="error-message" style="color:red"></p> <br>
-                        <button type="submit" id="login_button" class="btn btn-primary" onclick="return tutorLogin()">Log In</button>
-                    </form>
-                </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="tutor_login_password" placeholder="Password" />
             </div>
-            <div class="tab-pane fade" id="nav-signup" role="tabpanel" aria-labelledby="nav-signup-tab">
-                <div class="mx-5">
-                    <h4 class="mt-4">Register as a Tutor</h4>
-                <form id="tutorSignupForm">
-                    <div class="form-group">
-                        <label for="tutor_signup_username">Username</label>
-                        <input type="text" class="form-control" id="tutor_signup_username">
-                    </div> <br>
-                    <div class="form-group">
-                        <label for="tutor_signup_password">Password</label>
-                        <input type="text" class="form-control" id="tutor_signup_password">
-                    </div> <br>
-                    <div class="form-group">
-                        <label for="tutor_signup_title">Title</label>
-                        <div>
-                            <input type="radio" id="title_mr" name="tutor_signup_title" value="Mr.">
-                            <label for="mr">Mr.</label>
-                    
-                            <input type="radio" id="title_mrs" name="tutor_signup_title" value="Mrs.">
-                            <label for="mrs">Mrs.</label>
-                    
-                            <input type="radio" id="title_ms" name="tutor_signup_title" value="Ms.">
-                            <label for="ms">Ms.</label>
-                    
-                            <input type="radio" id="title_mdm" name="tutor_signup_title" value="Mdm.">
-                            <label for="mdm">Mdm.</label>
-                    
-                            <input type="radio" id="title_dr" name="tutor_signup_title" value="Dr.">
-                            <label for="dr">Dr.</label>
-                        </div>
-                    </div> <br>
-                    <div class="form-group">
-                        <label for="tutor_signup_firstname">First Name</label>
-                        <input type="text" class="form-control" id="tutor_signup_firstname">
-                    </div> <br>
-                    <div class="form-group">
-                        <label for="tutor_signup_lastname">Last Name</label>
-                        <input type="text" class="form-control" id="tutor_signup_lastname">
-                    </div> <br>
-                    <button type="submit" id="signup_button" class="btn btn-primary" onclick="return tutorSignup()">Sign Up</button>
-                </form>
-                </div>
+            <button type="submit" id="login_button" class="btn btn-primary" onclick="return tutorLogin()">Login</button>
+          </form>
+          <form id="tutorSignupForm" class="sign-up-form">
+            <h2 class="title">Sign up</h2>
+            <div class="input-field">
+                <i class="fas fa-user"></i>
+                <input type="text" id="tutor_signup_firstname" placeholder="First Name" />
             </div>
+            <div class="input-field">
+                <i class="fas fa-user"></i>
+                <input type="text" id="tutor_signup_lastname" placeholder="Last Name" />
+            </div>
+            <div class="input-field">
+              <i class="fas fa-envelope"></i>
+              <input type="text" id="tutor_signup_email" placeholder="Email" />
+            </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="tutor_signup_password" placeholder="Password" />
+            </div>
+            <button type="submit" id="signup_button" class="btn btn-primary" onclick="return tutorSignup()">Sign Up</button>
+          </form>
         </div>
+      </div>
+
+      <div class="panels-container">
+        <div class="panel left-panel">
+          <div class="content">
+            <h3>New to our Tutor Community ?</h3>
+            <p>
+                Join our community of dedicated volunteers who create free lessons to empower students. 
+                Be a part of something meaningful and make a positive impact on education!
+            </p>
+            <button class="btn transparent" id="sign-up-btn">
+              Sign up
+            </button>
+          </div>
+        </div>
+        <div class="panel right-panel">
+          <div class="content">
+            <h3>Already a Tutor ?</h3>
+            <p>
+              Welcome back! Your commitment to quality education is making a difference. 
+              Log in to continue contributing and promoting lifelong learning opportunities for all.
+            </p>
+            <button class="btn transparent" id="sign-in-btn">
+              Sign in
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
+
+    <script src="javascript.js"></script>
+  </body>
+</html>
