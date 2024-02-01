@@ -13,9 +13,9 @@ import (
 )
 
 type Booking struct {
-	BookingID  string `json:"booking_id"`
-	StudentID  string `json:"student_id"`
-	ScheduleID string `json:"schedule_id"`
+	BookingID  int `json:"booking_id"`
+	StudentID  int `json:"student_id"`
+	ScheduleID int `json:"schedule_id"`
 }
 
 var (
