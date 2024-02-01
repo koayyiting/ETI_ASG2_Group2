@@ -39,8 +39,8 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/lessonmaterial/{materialid}", material).Methods("POST", "DELETE", "OPTIONS")
 	router.HandleFunc("/lessonmaterial/all", allmaterials)
-	fmt.Println("Listening at port 5000")
-	log.Fatal(http.ListenAndServe(":5000", router))
+	fmt.Println("Listening at port 4088")
+	log.Fatal(http.ListenAndServe(":4088", router))
 }
 
 // REST API Functions
