@@ -5,11 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Small Business - Start Bootstrap Template</title>
-        <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <title>Available Lessons</title>
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <link href="css/card.css" rel="stylesheet" />
     </head>
     <body>
         <!-- Responsive navbar-->
@@ -28,11 +28,22 @@
         <!-- Page Content-->
         <div class="container px-4 px-lg-5">
             <br> <br>
-            <h4>Available Schedules</h4>
-            <!-- Content Row-->
-            <div id="cardContainer" class="row gx-4 gx-lg-5">
-                
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <h4>Available Schedules</h4>
+                    </div>
+                    <div class="col">
+                        <form class="d-flex">
+                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </form>
+                    </div>
+                </div>
             </div>
+            <br><br>
+            <!-- Content Row-->
+            <div id="cardContainer" class="row gx-4 gx-lg-5"></div>
         </div>
         <!-- Footer-->
         <footer class="py-5 bg-dark">

@@ -25,16 +25,22 @@ function listAvailableSchedule() {
     
                 // Set the card HTML content
                 card.innerHTML = `
-                    <div class="card h-100">
+                    <div class="h-100">
                         <div class="card-body">
-                            <h2 class="card-title" id="scheduled_lesson_id">Lesson ID: ${schedule.lesson_id}</h2>
-                            <p class="card-text" id="scheduled_start_time">Start Time: ${schedule.start_time}</p>
-                            <p class="card-text" id="scheduled_end_time">End Time: ${schedule.end_time}</p>
-                            <p class="card-text" id="scheduled_schedule_id">Schedule ID: ${schedule.schedule_id}</p>
+                            <div class="card-animate yellow-shadow">
+                                <h5 style="text-align: left;">Lesson ID: ${schedule.lesson_id}</h5>
+                                <p>Start Time: ${schedule.start_time}</p>
+                                <p>End Time: ${schedule.end_time}</p>
+                                <p>Schedule ID: ${schedule.schedule_id}</p>
+                                <button type="submit" class="btn btn-outline-secondary" onclick="return create_booking(${schedule.schedule_id})">Book</button>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-outline-secondary" onclick="return create_booking(${schedule.schedule_id})">Book</button>
                     </div>
                 `;
+                // <h2 class="card-title" id="scheduled_lesson_id">Lesson ID: ${schedule.lesson_id}</h2>
+                // <p class="card-text" id="scheduled_start_time">Start Time: ${schedule.start_time}</p>
+                // <p class="card-text" id="scheduled_end_time">End Time: ${schedule.end_time}</p>
+                // <p class="card-text" id="scheduled_schedule_id">Schedule ID: ${schedule.schedule_id}</p>
     
                 // Append the card to the container
                 cardContainer.appendChild(card);

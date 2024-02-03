@@ -16,16 +16,22 @@ function listBookings() {
   
         // Clear existing rows
         tableBody.innerHTML = '';
+
+        if (data != null){
+            data.forEach(user => {
+                var row = tableBody.insertRow();
+                row.innerHTML = `<td>${user.booking_id}</td>
+                                    <td>${user.student_id}</td>
+                                    <td>${user.schedule_id}</td>
+                                        <button class="btn btn-outline-secondary" onclick="return deleteBooking(${user.booking_id})">Delete</button>
+                                    </td>`;
+            });
+        } else{
+            tableBody.innerHTML = '<p style="justify-content: center; align-items: center;">You have 0 Bookings</p>';
+        }
   
         // Iterate through the received data and append rows to the table
-        data.forEach(user => {
-            var row = tableBody.insertRow();
-            row.innerHTML = `<td>${user.booking_id}</td>
-                                <td>${user.student_id}</td>
-                                <td>${user.schedule_id}</td>
-                                    <button class="btn btn-outline-secondary" onclick="return deleteBooking(${user.booking_id})">Delete</button>
-                                </td>`;
-        });
+        
       })
       .catch(error => console.error('Error fetching user details:', error));
 }
