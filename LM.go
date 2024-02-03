@@ -43,15 +43,6 @@ func main() {
 	log.Fatal(http.ListenAndServe(":4088", router))
 }
 
-// REST API Functions
-func allmaterials(w http.ResponseWriter, r *http.Request) {
-	materialJSON := struct {
-		Materials map[string]LessonMaterial `json: "Lesson Materials"`
-	}{getMaterials()}
-
-	json.NewEncoder(w).Encode(materialJSON)
-}
-
 func material(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	fmt.Println("Lesson Material Function")
@@ -118,8 +109,18 @@ func material(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// REST API Functions
+func allmaterials(w http.ResponseWriter, r *http.Request) {
+
+	materialJSON := struct {
+		LessonMaterials map[string]LessonMaterial `json:"Materials"`
+	}{getMaterial()}
+
+	json.NewEncoder(w).Encode(materialJSON)
+}
+
 // [Edit] SQL Functions
-func getMaterials() map[string]LessonMaterial {
+func getMaterial() map[string]LessonMaterial {
 
 	//Return Lesson Materials
 	var materials map[string]LessonMaterial = map[string]LessonMaterial{}
