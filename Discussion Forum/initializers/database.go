@@ -12,7 +12,7 @@ var DB *gorm.DB
 func InitDB() {
 
 	var err error
-	// Replace with your MySQL database connection parameters.
+	// Replace with my MySQL database connection parameters.
 	dbURI := "root:12345@tcp(localhost:3306)/forum?charset=utf8&parseTime=True&loc=Local" // connection link for the Mysql Workbench
 
 	// Open a connection to the database.
