@@ -1,0 +1,7 @@
+:root {
+    --light-grey: #d3d3d3;
+}
+
+.blockquote-footer {
+    color: var(--light-grey);
+}

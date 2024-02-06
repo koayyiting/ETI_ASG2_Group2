@@ -6,12 +6,11 @@ function getAllLM() {
     GetRequest.open("GET", "http://localhost:4088/lessonmaterial/all")
 
     console.log(getId())
+
     GetRequest.onload = function () {
         var data = JSON.parse(this.response)
         var lmList = Object.keys(data.Materials)
 
-        
-        console.log(lmList.length)
         content.innerHTML = "";
 
         lmList.forEach((lmId, index) => {
@@ -20,6 +19,9 @@ function getAllLM() {
 
             //HTML
             var lmItem = document.createElement("li");
+
+            var lmLink = document.createElement("a");
+
             
             var lmIcon = document.createElement("i");
             lmIcon.className = "bx bxs-chevron-right";
@@ -34,7 +36,6 @@ function getAllLM() {
 
             lm.forEach((material, index2) => {
                 lmHeader.innerHTML +=  ((material == "Topic") ? data.Materials[lmId][material] : '')
-
                 lmCreated.innerHTML += ((material == "Created on") ? formatDate(data.Materials[lmId][material]) : '')
                 // lmSummary.innerHTML +=((material == "Summary") ? data.Materials[lmId][material] : '')
             })
