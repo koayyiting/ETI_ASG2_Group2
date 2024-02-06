@@ -37,7 +37,8 @@ func main() {
 
 	// Router
 	router := mux.NewRouter()
-	router.HandleFunc("/lessonmaterial/{materialid}", material).Methods("POST", "DELETE", "OPTIONS")
+	router.HandleFunc("/lessonmaterial/material/{materialid}", material).Methods("GET", "POST", "DELETE", "OPTIONS")
+	router.HandleFunc("/lessonmaterial/tutor/{tutorid}", tutormaterial).Methods("GET")
 	router.HandleFunc("/lessonmaterial/all", allmaterials)
 	fmt.Println("Listening at port 4088")
 	log.Fatal(http.ListenAndServe(":4088", router))
@@ -48,7 +49,17 @@ func material(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Lesson Material Function")
 
 	//Adding New Materials
-	if r.Method == "POST" {
+	if r.Method == "GET" {
+		fmt.Println(r.Method + " Method")
+		if _, ok := isExist(params["materialid"]); !ok {
+			materialJSON := struct {
+				LessonMaterials map[string]LessonMaterial `json:"Material"`
+			}{getMaterial(params["materialid"])}
+
+			json.NewEncoder(w).Encode(materialJSON)
+		}
+
+	} else if r.Method == "POST" {
 		if body, err := ioutil.ReadAll(r.Body); err == nil {
 			fmt.Println(r.Method + " Method")
 			if err := json.Unmarshal(body, &lm); err == nil {
@@ -114,13 +125,25 @@ func allmaterials(w http.ResponseWriter, r *http.Request) {
 
 	materialJSON := struct {
 		LessonMaterials map[string]LessonMaterial `json:"Materials"`
-	}{getMaterial()}
+	}{getMaterials()}
+
+	json.NewEncoder(w).Encode(materialJSON)
+}
+
+func tutormaterial(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	var tutorid = params["tutorid"]
+
+	materialJSON := struct {
+		LessonMaterials map[string]LessonMaterial `json:"Materials"`
+	}{getTutorMaterial(tutorid)}
 
 	json.NewEncoder(w).Encode(materialJSON)
 }
 
 // [Edit] SQL Functions
-func getMaterial() map[string]LessonMaterial {
+func getMaterials() map[string]LessonMaterial {
 
 	//Return Lesson Materials
 	var materials map[string]LessonMaterial = map[string]LessonMaterial{}
@@ -142,6 +165,55 @@ func getMaterial() map[string]LessonMaterial {
 	}
 
 	return materials
+}
+
+func getMaterial(id string) map[string]LessonMaterial {
+
+	//Return Lesson Materials
+	var materials map[string]LessonMaterial = map[string]LessonMaterial{}
+
+	lessonMtrls, err := db.Query("SELECT * FROM LessonMaterials WHERE ID=?", id)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	for lessonMtrls.Next() {
+		var lm LessonMaterial
+		var lmID string
+
+		// [Edit] Lesson Material Values
+		_ = lessonMtrls.Scan(&lmID, &lm.TutorID, &lm.Topic, &lm.Summary, &lm.Created)
+
+		//Adding to Materials Map
+		materials[lmID] = lm
+	}
+
+	return materials
+}
+
+func getTutorMaterial(id string) map[string]LessonMaterial {
+
+	//Return Lesson Materials
+	var materials map[string]LessonMaterial = map[string]LessonMaterial{}
+
+	lessonMtrls, err := db.Query("SELECT * FROM LessonMaterials WHERE TutorID=?", id)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	for lessonMtrls.Next() {
+		var lm LessonMaterial
+		var lmID string
+
+		// [Edit] Lesson Material Values
+		_ = lessonMtrls.Scan(&lmID, &lm.TutorID, &lm.Topic, &lm.Summary, &lm.Created)
+
+		//Adding to Materials Map
+		materials[lmID] = lm
+	}
+
+	return materials
+
 }
 
 func isExist(id string) (LessonMaterial, bool) {
