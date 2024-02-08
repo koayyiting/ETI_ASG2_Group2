@@ -18,6 +18,9 @@ type Schedule struct {
 	ScheduleID_str string    `json:"schedule_id_str"`
 	TutorID        int       `json:"tutor_id"`
 	LessonID       int       `json:"lesson_id"`
+	LessonID_str   int       `json:"lesson_id_str"`
+	LessonName     string    `json:"lesson_name"`
+	Location       string    `json:"location"`
 	StartTime_str  string    `json:"start_time_str"`
 	StartTime      time.Time `json:"start_time"`
 	EndTime_str    string    `json:"end_time_str"`
@@ -33,7 +36,7 @@ func main() {
 	// openDB()
 	router := mux.NewRouter()
 	router.HandleFunc("/api/v1/schedule", newSchedule).Methods("POST", "OPTIONS")
-	router.HandleFunc("/api/v1/getSchedules", getSchedules).Methods("GET", "OPTIONS")
+	router.HandleFunc("/api/v1/getSchedules/{tid}", getSchedules).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/v1/oneSchedule/{sid}", oneSchedule).Methods("PUT", "DELETE", "OPTIONS")
 	fmt.Println("Listening at port 1000")
 	http.ListenAndServe(":1000",
@@ -54,9 +57,10 @@ func openDB() {
 }
 
 func getSchedules(w http.ResponseWriter, r *http.Request) {
+	tid := mux.Vars(r)["tid"]
 	switch r.Method {
 	case http.MethodGet:
-		if schedules, err := retrieveSchedules(); err == nil {
+		if schedules, err := retrieveSchedules(tid); err == nil {
 			w.WriteHeader(http.StatusAccepted) //202
 			if schedulesJSON, err := json.Marshal(schedules); err == nil {
 				w.Write(schedulesJSON)
@@ -69,12 +73,12 @@ func getSchedules(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func retrieveSchedules() ([]Schedule, error) {
+func retrieveSchedules(tid string) ([]Schedule, error) {
 	// func retrieveSchedules(tid int) ([]Schedule, error) {
 	fmt.Println("In retrieveSchedules function")
 	openDB()
 	defer db.Close()
-	rows, err := db.Query("SELECT ScheduleID, TutorID, LessonID, StartTime, EndTime FROM Schedule")
+	rows, err := db.Query("SELECT ScheduleID, TutorID, LessonID, LessonName, Location, StartTime, EndTime FROM Schedule WHERE TutorID = ?", tid)
 	// rows, err := db.Query("SELECT * FROM Schedule WHERE TutorID = ?", tid)
 	if err != nil {
 		return nil, err
@@ -86,12 +90,13 @@ func retrieveSchedules() ([]Schedule, error) {
 
 	for rows.Next() {
 		var schedule Schedule
-		if err := rows.Scan(&schedule.ScheduleID, &schedule.TutorID, &schedule.LessonID, &startTimeStr, &endTimeStr); err != nil {
+		if err := rows.Scan(&schedule.ScheduleID, &schedule.TutorID, &schedule.LessonID, &schedule.LessonName, &schedule.Location, &startTimeStr, &endTimeStr); err != nil {
 			return nil, err
 		}
-		schedule.StartTime, _ = time.Parse("2006-01-02 15:04:05", startTimeStr)
-		schedule.EndTime, _ = time.Parse("2006-01-02 15:04:05", endTimeStr)
-
+		sgt, _ := time.LoadLocation("Asia/Singapore")
+		schedule.StartTime, _ = time.ParseInLocation("2006-01-02 15:04:05", startTimeStr, sgt)
+		schedule.EndTime, _ = time.ParseInLocation("2006-01-02 15:04:05", endTimeStr, sgt)
+		fmt.Println(schedule)
 		schedules = append(schedules, schedule)
 	}
 	return schedules, nil
@@ -128,7 +133,7 @@ func createSchedule(s Schedule) error {
 	fmt.Println("In createSchedule function")
 	openDB()
 	defer db.Close()
-	_, err := db.Exec("insert into Schedule (TutorID, LessonID, StartTime, EndTime) values(?,?,?,?)", s.TutorID, s.LessonID, s.StartTime_str, s.EndTime_str)
+	_, err := db.Exec("insert into Schedule (TutorID, LessonID, LessonName, Location, StartTime, EndTime) values(?,?,?,?,?,?)", s.TutorID, s.LessonID, &s.LessonName, &s.Location, s.StartTime_str, s.EndTime_str)
 	if err != nil {
 		return err
 	}
@@ -171,8 +176,8 @@ func updateSchedule(schedule Schedule) error {
 	fmt.Println("update schedule query")
 	openDB()
 	defer db.Close() //will run at the end of the block of the code
-	fmt.Println(schedule.StartTime_str)
-	_, err := db.Exec("UPDATE Schedule SET StartTime=?, EndTime=? WHERE ScheduleID=?", schedule.StartTime_str, schedule.EndTime_str, schedule.ScheduleID_str)
+	fmt.Println(schedule.ScheduleID_str)
+	_, err := db.Exec("UPDATE Schedule SET StartTime=?, EndTime=?, Location=?, LessonName=?, LessonID=? WHERE ScheduleID=?", schedule.StartTime_str, schedule.EndTime_str, schedule.Location, schedule.LessonName, schedule.LessonID_str, schedule.ScheduleID_str)
 	if err != nil {
 		fmt.Println(err)
 		return err
