@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/handlers"
@@ -26,8 +27,8 @@ var (
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/api/v1/book/{scheduleID}", newBook).Methods("POST", "OPTIONS")
-	router.HandleFunc("/api/v1/getBookings", getBooking).Methods("GET", "OPTIONS")
-	router.HandleFunc("/api/v1/oneBooking/{bookingID}", oneBooking).Methods("GET", "DELETE", "OPTIONS")
+	router.HandleFunc("/api/v1/getBookings/{sid}", getBooking).Methods("GET", "OPTIONS")
+	router.HandleFunc("/api/v1/oneBooking/{bookingID}", oneBooking).Methods("DELETE", "OPTIONS")
 	fmt.Println("Listening at port 1765")
 	http.ListenAndServe(":1765",
 		handlers.CORS(
@@ -49,8 +50,6 @@ func openDB() {
 func newBook(w http.ResponseWriter, r *http.Request) {
 	scheduleID := mux.Vars(r)["scheduleID"]
 	switch r.Method {
-	case http.MethodGet:
-		retrieveBookings() // need use session to get the email of student
 	case http.MethodPost: //create booking
 		if body, err := io.ReadAll(r.Body); err == nil {
 			var newBooking Booking
@@ -108,9 +107,11 @@ func existingBooking(sid string) bool {
 }
 
 func getBooking(w http.ResponseWriter, r *http.Request) {
+	studentId_str := mux.Vars(r)["sid"]
+	studentId, _ := strconv.Atoi(studentId_str)
 	switch r.Method {
 	case http.MethodGet:
-		if bookings, err := retrieveBookings(); err == nil {
+		if bookings, err := retrieveBookings(studentId); err == nil {
 			w.WriteHeader(http.StatusAccepted) //202
 			if bookingsJSON, err := json.Marshal(bookings); err == nil {
 				w.Write(bookingsJSON)
@@ -124,11 +125,11 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 }
 
 // retrieve all booking done by student
-func retrieveBookings() ([]Booking, error) {
+func retrieveBookings(studentId int) ([]Booking, error) {
 	fmt.Println("In retrieveBookings function")
 
 	openDB()
-	rows, err := db.Query("SELECT * FROM Booking")
+	rows, err := db.Query("SELECT * FROM Booking WHERE StudentID = ?", studentId)
 	// rows, err := db.Query("SELECT * FROM Schedule WHERE TutorID = ?", tid)
 	if err != nil {
 		return nil, err
