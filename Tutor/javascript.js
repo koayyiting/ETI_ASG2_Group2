@@ -79,3 +79,11 @@ function tutorLogin(){
   request.send();
   return false
 }
+
+function logout() {
+  // Clear localStorage
+  localStorage.clear();
+
+  // Redirect to the logout page or any other desired destination
+  window.location.href = "logout.html";
+}
