@@ -1006,7 +1006,7 @@ body {
 	min-width: 400px;
 	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 	z-index: 1;
-	max-height: 200px; /* Adjust the maximum height as needed */
+	max-height: 400px; /* Adjust the maximum height as needed */
 	overflow-y: auto; /* Add vertical scrollbar when content exceeds max-height */
 }
 
