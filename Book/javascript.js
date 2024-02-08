@@ -116,7 +116,7 @@ function deleteBooking(bookingID) {
     const url = `http://localhost:1765/api/v1/oneBooking/${bookingID}`;
   
     // Confirm deletion with the user (you can customize this)
-    if (confirm("Are you sure you want to delete this Booking?")) {
+    if (confirm("Are you sure you want to cancel this Booking?")) {
         // Make a DELETE request to the server endpoint
         fetch(url, {
           method: 'DELETE',
