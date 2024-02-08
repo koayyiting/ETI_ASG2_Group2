@@ -66,12 +66,12 @@ func material(w http.ResponseWriter, r *http.Request) {
 
 					addMaterial(params["materialid"], lm)
 					w.WriteHeader(http.StatusAccepted)
-					fmt.Println(r.Method, " Response: ", r.Response)
+					fmt.Println(r.Method, " Response: ", r.Response.Status)
 
 				} else {
 					w.WriteHeader(http.StatusConflict)
 					fmt.Fprint(w, "Lesson Materials exists")
-					fmt.Println(r.Method, " Response: ", r.Response)
+					fmt.Println(r.Method, " Response: ", r.Response.Status)
 				}
 			} else {
 				fmt.Print(err)
@@ -86,12 +86,12 @@ func material(w http.ResponseWriter, r *http.Request) {
 				if _, ok := isExist(params["materialid"]); ok {
 
 					editMaterial(params["materialid"], lm)
-					fmt.Println(r.Method, " Response: ", r.Response)
+					fmt.Println(r.Method, " Response: ", r.Response.Status)
 					w.WriteHeader(http.StatusAccepted)
 				} else {
 
 					w.WriteHeader(http.StatusNotFound)
-					fmt.Println(r.Method, " Response: ", r.Response)
+					fmt.Println(r.Method, " Response: ", r.Response.Status)
 				}
 			} else {
 				fmt.Println(err)

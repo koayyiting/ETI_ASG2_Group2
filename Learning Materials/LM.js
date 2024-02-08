@@ -104,7 +104,7 @@ function lmSummary() {
     console.log(lmMaterialId.textContent);
     console.log(lmTitle.textContent);
     console.log(lmParagraph.textContent);
-    console.log(lmDate.textContent)
+    console.log(lmDate.textContent);
 
     var GetRequest = new XMLHttpRequest();
     GetRequest.open("GET", "http://localhost:4088/material/" + summaryId)
@@ -153,11 +153,13 @@ function getId() {
         .then(data => {
             var lmList = Object.keys(data.Materials)
             id = lmList.length
-            id+=1
-            console.log(id)
-            console.log(typeof(id))
-
-            return id;
+            id = id + 1
+            console.log("new LMID output:", id)
+                
+            return id.toString();
+        })
+        .then(idString => {
+            window.globalLmId = idString;
     });
 
 }
@@ -165,7 +167,7 @@ function getId() {
 function addLM() {
 
     //Get LMID, TutorId and DateTime
-    const newID = getId().toString();
+    const newID = window.globalLmId;
     const createdDate = formatDateSQL();
     // const tutorId = tutor_id;
 
@@ -173,8 +175,11 @@ function addLM() {
     console.log(createdDate);
     // console.log(tutorId);
 
-    //Create Lesson Material JSON
-    const newLMJSON = {
+    var addRequest = new XMLHttpRequest()
+    addRequest.open("POST", "http://localhost:4088/lessonmaterial/material/" + newID)
+
+     //Create Lesson Material JSON
+     const newLMJSON = {
         "TutorID" : parseInt(document.getElementById("tutorid").value),
         "Topic": document.getElementById("topic").value,
         "Summary": document.getElementById("summary").value,
@@ -183,85 +188,104 @@ function addLM() {
 
     console.log(newLMJSON)
 
-    var addRequest = new XMLHttpRequest()
-    addRequest.open("POST", "http://localhost:4088/lessonmaterial/material/" + newID)
     addRequest.onload = function () {
-        if(addRequest.status == 202) {
+        if(addRequest.status === 202) {
             alert('Learning Material is successfully created')
             windows.location.href="../Learning Materials/LM.html"
-        } else if (addRequest.status == 409) {
-            alert('Learning Material is not created')
-            windows.location.href="../Learning Materials/LM.html"
+        } else if (addRequest.status === 409) {
+            const errorMessage = addRequest.response || "Learning Material is not created. Please check inputs are within requirements!";
+            alert(errorMessage)
+        } else {
+            console.error('Failed to add learning material. Status:', addRequest.status);
+            alert('Failed to add learning material. Please try again later.');
         }
-    }
+    };
 
+    console.log(addRequest)
+    console.log(addRequest.status)
     addRequest.send(JSON.stringify(newLMJSON))
 
 }
 
-function editLM(TutorID, Topic, Summary) {
+function loadEditLM(lmUpdateId) {
 
-    updateContent.innerHTML = (
-        "<form class=\"login active\" onsubmit=\"return updateLM()\">" +
-        "<a href=\"../Learning Materials/LM.html\">"+
-            "<i class='bx bxs-arrow-to-left' id=\"backbtn\" title=\"Back to Learning Material\" ></i>" +
-        "</a>"+
-        "<h2 class=\"title\">Update Learning Material</h2>" +
-        "<div class=\"form-group\">" +
-            "<label for=\"tutorid\">Tutor ID</label>" +
-            "<div class=\"input-group\">" +
-                "<input type=\"text\" id=\"tutorid\" placeholder=\"Tutor ID\">" + TutorID +
-            "</div>" +
-            "<span class=\"help-text\">Required</span>" +
-        "</div>" +
-        "<div class=\"form-group\">"+
-            "<label for=\"topic\">Topic</label>"+
-            "<div class=\"input-group\">"+
-                "<input type=\"text\" id=\"topic\" placeholder=\"Topic\">" + Topic +
-            "</div>" +
-            "<span class=\"help-text\">Required</span>" +
-        "</div>" +
-        "<div class=\"form-group\">" +
-            "<label for=\"topic\">Summary</label>" +
-            "<div class=\"input-group\">" +
-                "<textarea name=\"opinion\" rows=\"7\" type=\"text\" placeholder=\"Summary\" id=\"summary\">" + Summary +
-                "</textarea>" +
-            "</div>" +
-            "<span class=\"help-text\">Required</span>" +
-        "</div>" +
-        
-        "<button class=\"btn-submit\">Update</button>" +
+    fetch("http://localhost:4088/material/" + lmUpdateId)
+        .then(response => response.json())
+        .then(data => {
+            if(data) {
+                const queryString = new URLSearchParams({id : lmUpdateId});
+                window.location.href = "../Learning Materials/LMUpdate.html?" + queryString;
 
-    "</form>"
-    )
+            } else {
+                console.error("Failed to fetch material data for:", lmUpdateId)
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching material data:", error);
+        });
 }
 
-function updateLM() {
+// function updateLM() {
 
-    var updateRequest = new XMLHttpRequest()
-    const id = document.getElementById("Id").value
+//     const urlParams = new URLSearchParams(window.location.search);
+//     const loadId = urlParams.get("id");
+
+//     if (!summaryId){
+//         console.error("Missing ID in query string");
+//         return;
+//     }
+
+//     //HTML Element
+//     var lmTutor = document.getElementById("tutorid");
+//     var lmTopic = document.getElementById("topic");
+//     var lmSummary = document.getElementById("summary");
+
+
+//     console.log(lmTitle.textContent);
+//     console.log(lmTopic.textContent);
+//     console.log(lmSummary.textContent);
+
+//     var loadRequest = new XMLHttpRequest();
+//     loadRequest.open("GET", "http://localhost:4088/material/"+loadId)
+
+//     loadRequest.onload = function() {
+//         var data = JSON.parse(this.response)
+//         var lmObj = Object.keys(data.Material)
+
+//         console.log(lmObj)
+//         lmMaterialId.textContent = lmObj;
+
+//         lmTutor.textContent = (data.Material[lmObj]['TutorID']);
+//         lmTopic.textContent = (data.Material[lmObj]['Topic']);
+//         lmTopic.textContent = (data.Material[lmObj]['Summary']);
+//     }
+
+//     loadRequest.send()
+// }
+
+// function updateLM(updateId) {
+
+//     var loadRequest = new XMLHttpRequest();
+//     loadRequest.open("PUT", "http://localhost:4088/lessonmaterial/material/"+ updateId)
+
+//     const updatedLMJSON = {
+//         "TutorID" : document.getElementById("tutorId").value,
+//         "Topic": document.getElementById("topic").value,
+//         "Summary": document.getElementById("summary").value,
+//     }
+
+// }
     
-    updateRequest.open("PUT", "http://localhost:4088/lessonmaterial/material/"+id)
+//     updateRequest.onload = function () {
+//         if(updateRequest.status == 202) {
+//             alert('Learning Material is successfully created')
+//             windows.location.href="../Learning Materials/LM.html"
 
-    const updatedLMJSON = {
-        "TutorID" : document.getElementById("tutorId").value,
-        "Topic": document.getElementById("topic").value,
-        "Summary": document.getElementById("summary").value,
-        "Created on": $now(),
-    }
+//         } else if (updateRequest.status == 404) {
+//             alert('Learning Material is not created')
+//             windows.location.href="../Learning Materials/LM.html"
+//         }
+//     }
 
-    updateRequest.onload = function () {
-        if(updateRequest.status == 202) {
-            alert('Learning Material is successfully created')
-            windows.location.href="../Learning Materials/LM.html"
-
-        } else if (updateRequest.status == 404) {
-            alert('Learning Material is not created')
-            windows.location.href="../Learning Materials/LM.html"
-        }
-    }
-
-    updateRequest.send(JSON.stringify(updatedLMJSON))
-    return false
-
-}
+//     updateRequest.send(JSON.stringify(updatedLMJSON))
+//     return false
