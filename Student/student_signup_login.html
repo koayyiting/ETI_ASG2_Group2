@@ -8,43 +8,43 @@
       crossorigin="anonymous"
     ></script>
     <link rel="stylesheet" href="style.css" />
-    <title>Tutor Login & Sign up Form</title>
+    <title>Student Login & Sign up Form</title>
   </head>
   <body>
     <div class="container">
       <div class="forms-container">
         <div class="signin-signup">
-          <form id="tutorLoginForm" class="sign-in-form">
+          <form id="studentLoginForm" class="sign-in-form">
             <h2 class="title">Login</h2>
             <div class="input-field">
               <i class="fas fa-envelope"></i>
-              <input type="text" id="tutor_login_email" placeholder="Email" />
+              <input type="text" id="student_login_email" placeholder="Email" />
             </div>
             <div class="input-field">
               <i class="fas fa-lock"></i>
-              <input type="password" id="tutor_login_password" placeholder="Password" />
+              <input type="password" id="student_login_password" placeholder="Password" />
             </div>
-            <button type="submit" id="login_button" class="btn btn-primary" onclick="return tutorLogin()">Login</button>
+            <button type="submit" id="login_button" class="btn btn-primary" onclick="return studentLogin()">Login</button>
           </form>
-          <form id="tutorSignupForm" class="sign-up-form">
+          <form id="studentSignupForm" class="sign-up-form">
             <h2 class="title">Sign up</h2>
             <div class="input-field">
                 <i class="fas fa-user"></i>
-                <input type="text" id="tutor_signup_firstname" placeholder="First Name" />
+                <input type="text" id="student_signup_firstname" placeholder="First Name" />
             </div>
             <div class="input-field">
                 <i class="fas fa-user"></i>
-                <input type="text" id="tutor_signup_lastname" placeholder="Last Name" />
+                <input type="text" id="student_signup_lastname" placeholder="Last Name" />
             </div>
             <div class="input-field">
               <i class="fas fa-envelope"></i>
-              <input type="text" id="tutor_signup_email" placeholder="Email" />
+              <input type="text" id="student_signup_email" placeholder="Email" />
             </div>
             <div class="input-field">
               <i class="fas fa-lock"></i>
-              <input type="password" id="tutor_signup_password" placeholder="Password" />
+              <input type="password" id="student_signup_password" placeholder="Password" />
             </div>
-            <button type="submit" id="signup_button" class="btn btn-primary" onclick="return tutorSignup()">Sign Up</button>
+            <button type="submit" id="signup_button" class="btn btn-primary" onclick="return studentSignup()">Sign Up</button>
           </form>
         </div>
       </div>
@@ -52,10 +52,11 @@
       <div class="panels-container">
         <div class="panel left-panel">
           <div class="content">
-            <h3>New to our Tutor Community ?</h3>
+            <h3>New to our Student Community ?</h3>
             <p>
-                Join our community of dedicated volunteers who create free lessons to empower students. 
-                Be a part of something meaningful and make a positive impact on education!
+                Join our community of learners dedicated to academic growth. 
+                Connect with others, access valuable resources, and engage in collaborative learning experiences. 
+                Be a part of something meaningful and make a positive impact on your educational journey!
             </p>
             <button class="btn transparent" id="sign-up-btn">
               Sign up
@@ -64,7 +65,7 @@
         </div>
         <div class="panel right-panel">
           <div class="content">
-            <h3>Already a Tutor ?</h3>
+            <h3>Already a Student ?</h3>
             <p>
               Welcome back! Your commitment to quality education is making a difference. 
               Log in to continue contributing and promoting lifelong learning opportunities for all.

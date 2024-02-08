@@ -39,36 +39,43 @@ function tutorSignup(){
 }
 
 function tutorLogin(){
-    var request = new XMLHttpRequest();
-    const form = document.getElementById('tutorLoginForm');
-    const tutorEmail = form.elements['tutor_login_email'].value;
-    const tutorPassword = form.elements['tutor_login_password'].value;
-    console.log(tutorEmail);
-    console.log(tutorPassword);
+  var request = new XMLHttpRequest();
+  const form = document.getElementById('tutorLoginForm');
+  const tutorEmail = form.elements['tutor_login_email'].value;
+  const tutorPassword = form.elements['tutor_login_password'].value;
+  console.log(tutorEmail);
+  console.log(tutorPassword);
 
-    const curl = 'http://localhost:5211/api/v1/tutor?tutorEmail=' + encodeURIComponent(tutorEmail) + '&tutorPassword=' + encodeURIComponent(tutorPassword);
-    console.log(curl);
+  const curl = 'http://localhost:5211/api/v1/tutor?tutorEmail=' + encodeURIComponent(tutorEmail) + '&tutorPassword=' + encodeURIComponent(tutorPassword);
+  console.log(curl);
 
-    request.open("GET", curl);
-    request.onreadystatechange = function() {
-      if (request.readyState === 4) {
-        if (request.status === 200) {
-          // Successful login, redirect to main page
-          location.href = "tutor_main.html";
-        } else if (request.status === 401) {
-          // Login failed, handle error
-          form.reset();
-          document.getElementById('error-message').innerHTML = 'Incorrect Email or Password.';
-        } else {
-          // Handle other status codes or network errors
-          document.getElementById('error-message').innerHTML = 'An error occurred. Please try again later.';
-        }
+  request.open("GET", curl);
+  request.onreadystatechange = function() {
+    if (request.readyState === 4) {
+      if (request.status === 200) {
+        const responseData = JSON.parse(request.responseText);
+        console.log(responseData);
+
+        // Save user information to localStorage
+        localStorage.setItem('tutorId', responseData.tutorId);
+        localStorage.setItem('tutorFirstName', responseData.tutorFirstName);
+        localStorage.setItem('tutorLastName', responseData.tutorLastName);
+        localStorage.setItem('tutorEmail', responseData.tutorEmail);
+
+        console.log('localStorage:', localStorage);
+
+        // Successful login, redirect to main page
+        location.href = "tutor_main.html";
+      } else if (request.status === 401) {
+        // Login failed, handle error
+        form.reset();
+        document.getElementById('error-message').innerHTML = 'Incorrect Email or Password.';
+      } else {
+        // Handle other status codes or network errors
+        document.getElementById('error-message').innerHTML = 'An error occurred. Please try again later.';
       }
-    };
-    request.send();
-    return false
-}
-
-function scheduleMain(){
-  
+    }
+  };
+  request.send();
+  return false
 }

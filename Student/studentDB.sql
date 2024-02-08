@@ -1,11 +1,19 @@
-Create database student;
+CREATE USER 'student'@'localhost' IDENTIFIED BY 'etistudentpwd';
+GRANT ALL ON *.* TO 'student'@'localhost';
 
-use student;
-Create table student (studentID INT NOT NULL PRIMARY KEY, studentFirstName Varchar(50), studentLastName varchar(30), phoneNo varchar(20), studentEmail varchar (50), studentPassword varchar (20));
+CREATE DATABASE IF NOT EXISTS student_db DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE student_db;
 
+CREATE TABLE IF NOT EXISTS Student (
+StudentID int NOT NULL AUTO_INCREMENT,
+FirstName varchar (50) NOT NULL,
+LastName varchar (50) NOT NULL,
+Email varchar (50) NOT NULL,
+Password varchar (50) NOT NULL,
+PRIMARY KEY (`StudentID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO student VALUES (1, 'Salman', 'Khan', '88237164', 'salmon@gmail.com', 'b0ll1vard'),
-(2, 'Ting Wong', 'Sum', '88732192', 'sumtw@hotmail.com', 'wR0ngW4y'),
-(3, 'Daniel', 'Middleton', '90293124', 'danmdt@hotmail.com', 'tr4yaURu5'),
-(4, 'Jacky', 'Lee', '86234953', 'bruceno1@gmail.com', 'hw4CH4A');
+INSERT INTO Student (StudentID, FirstName, LastName, Email, Password)
+VALUES(1, 'Yi Ting', 'Koay', 'yiting@gmail.com', '123456');
 
+SELECT * FROM Student;

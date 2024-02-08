@@ -92,7 +92,7 @@
 		<main>
 			<div class="head-title">
 				<div class="left">
-					<h1>Welcome, [Name]</h1>
+					<h1>Welcome, <span id="username-placeholder"></span></h1>
 					<ul class="breadcrumb">
 						<li>
 							<a href="#">Dashboard</a>
@@ -200,7 +200,29 @@
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
-	
+	<script>
+        // Retrieve data from localStorage
+        const tutorId = localStorage.getItem('tutorId');
+        const tutorFirstName = localStorage.getItem('tutorFirstName');
+        const tutorLastName = localStorage.getItem('tutorLastName');
+        const tutorEmail = localStorage.getItem('tutorEmail');
+
+        // Check if the data exists
+        if (tutorId) {
+            // Use the retrieved data
+            console.log('Tutor ID:', tutorId);
+            console.log('Tutor First Name:', tutorFirstName);
+            console.log('Tutor Last Name:', tutorLastName);
+            console.log('Tutor Email:', tutorEmail);
+
+			// Update the welcome message with the tutor's first name
+			const usernamePlaceholder = document.getElementById('username-placeholder');
+        usernamePlaceholder.textContent = tutorFirstName;
+        } else {
+            // Handle the case when data doesn't exist
+            console.log('Data not found in localStorage');
+        }
+    </script>
 
 	<script src="script.js"></script>
 </body>

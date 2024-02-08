@@ -43,8 +43,8 @@ func main() {
 	dB()
 
 	router := mux.NewRouter()
-	router.HandleFunc("/api/v1/tutor", createTutorAccHandler).Methods("POST")
-	router.HandleFunc("/api/v1/tutor", GetTutorAccHandler).Methods("GET")
+	router.HandleFunc("/api/v1/tutor", TutorSignUpHandleer).Methods("POST")
+	router.HandleFunc("/api/v1/tutor", TutorLoginHandler).Methods("GET")
 	router.HandleFunc("/api/v1/tutor/{tutorID}", updateTutorProfileHandler).Methods("PUT")
 
 	fmt.Println("Listening at port 5211")
@@ -58,7 +58,7 @@ func main() {
 }
 
 // create tutor acc/signup
-func createTutorAccHandler(w http.ResponseWriter, r *http.Request) {
+func TutorSignUpHandleer(w http.ResponseWriter, r *http.Request) {
 	var newTutor Tutor
 	err := json.NewDecoder(r.Body).Decode(&newTutor)
 	if err != nil {
@@ -84,7 +84,7 @@ func createTutorAccHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Account created successfully")
 }
 
-func GetTutorAccHandler(w http.ResponseWriter, r *http.Request) {
+func TutorLoginHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.URL.Query().Get("tutorEmail")
 	password := r.URL.Query().Get("tutorPassword")
 
