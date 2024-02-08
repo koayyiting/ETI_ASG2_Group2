@@ -62,23 +62,7 @@ function getAllLM() {
         });
     }
 
-    console.log(getId())
     GetRequest.send()
-}
-
-function getId() {
-
-    var id;
-    fetch("http://localhost:4088/lessonmaterial/all")
-        .then(response => response.json())
-        .then(data => {
-            var lmList = Object.keys(data.Materials)
-            id = lmList.length
-            console.log(id)
-        })
-
-    return id;
-
 }
 
 function loadSummary(lmSummaryId) {
@@ -155,19 +139,52 @@ function formatDate(datetimeStr) {
 
 }
 
+function formatDateSQL() {
+    const date = new Date();
+    const formattedDate = date.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, '');
+    return formattedDate
+}
+
+function getId() {
+
+    var id;
+    fetch("http://localhost:4088/lessonmaterial/all")
+        .then(response => response.json())
+        .then(data => {
+            var lmList = Object.keys(data.Materials)
+            id = lmList.length
+            id+=1
+            console.log(id)
+            console.log(typeof(id))
+
+            return id;
+    });
+
+}
+
 function addLM() {
 
-    var addRequest = new XMLHttpRequest()
-    const newID = getId()
-    addRequest.open("POST", "http://localhost:4088//lessonmaterial/material/" + newID)
+    //Get LMID, TutorId and DateTime
+    const newID = getId().toString();
+    const createdDate = formatDateSQL();
+    // const tutorId = tutor_id;
 
+    console.log(newID);
+    console.log(createdDate);
+    // console.log(tutorId);
+
+    //Create Lesson Material JSON
     const newLMJSON = {
-        "TutorID" : tutor_id,
+        "TutorID" : parseInt(document.getElementById("tutorid").value),
         "Topic": document.getElementById("topic").value,
         "Summary": document.getElementById("summary").value,
-        "Created on": $now(),
+        "Created on": createdDate,
     }
 
+    console.log(newLMJSON)
+
+    var addRequest = new XMLHttpRequest()
+    addRequest.open("POST", "http://localhost:4088/lessonmaterial/material/" + newID)
     addRequest.onload = function () {
         if(addRequest.status == 202) {
             alert('Learning Material is successfully created')
@@ -178,6 +195,7 @@ function addLM() {
         }
     }
 
+    
     addRequest.send(JSON.stringify(newLMJSON))
 
 }
