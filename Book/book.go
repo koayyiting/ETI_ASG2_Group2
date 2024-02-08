@@ -25,9 +25,9 @@ var (
 
 func main() {
 	router := mux.NewRouter()
-	router.HandleFunc("/api/v1/book", newBook).Methods("POST", "OPTIONS")
+	router.HandleFunc("/api/v1/book/{scheduleID}", newBook).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/v1/getBookings", getBooking).Methods("GET", "OPTIONS")
-	router.HandleFunc("/api/v1/oneBooking/{bookingID}", oneBooking).Methods("GET", "DELETE", "POST", "OPTIONS")
+	router.HandleFunc("/api/v1/oneBooking/{bookingID}", oneBooking).Methods("GET", "DELETE", "OPTIONS")
 	fmt.Println("Listening at port 1765")
 	http.ListenAndServe(":1765",
 		handlers.CORS(
@@ -47,6 +47,7 @@ func openDB() {
 }
 
 func newBook(w http.ResponseWriter, r *http.Request) {
+	scheduleID := mux.Vars(r)["scheduleID"]
 	switch r.Method {
 	case http.MethodGet:
 		retrieveBookings() // need use session to get the email of student
@@ -56,12 +57,18 @@ func newBook(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(string(body))
 			if err := json.Unmarshal(body, &newBooking); err == nil {
 				fmt.Println(newBooking)
-				if createErr := createBooking(newBooking); createErr == nil {
-					w.WriteHeader(http.StatusAccepted) // 202
+				if notSameLesson := existingBooking(scheduleID); notSameLesson {
+					if createErr := createBooking(newBooking); createErr == nil {
+						w.WriteHeader(http.StatusAccepted) // 202
+					} else {
+						w.WriteHeader(http.StatusConflict)
+						fmt.Println("Error creating booking: ", createErr)
+					}
 				} else {
-					w.WriteHeader(http.StatusConflict)
-					fmt.Println("Error creating booking: ", createErr)
+					w.WriteHeader(http.StatusUnprocessableEntity)
+					fmt.Println("You have already Booked this Schedule")
 				}
+
 			} else {
 				w.WriteHeader(http.StatusBadRequest)
 				fmt.Println("Error unmarshaling JSON: ", err)
@@ -83,6 +90,21 @@ func createBooking(b Booking) error {
 		return err
 	}
 	return nil
+}
+
+// check if booked before
+func existingBooking(sid string) bool {
+	fmt.Println("In createBooking function")
+	openDB()
+	defer db.Close()
+	var booking Booking
+	rowBooking := db.QueryRow("SELECT * FROM Booking where ScheduleID=?", sid)
+	errBook := rowBooking.Scan(&booking.BookingID, &booking.StudentID, &booking.ScheduleID)
+	if errBook != sql.ErrNoRows {
+		fmt.Println("Booked Same Lesson")
+		return false
+	}
+	return true
 }
 
 func getBooking(w http.ResponseWriter, r *http.Request) {

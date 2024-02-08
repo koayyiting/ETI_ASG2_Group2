@@ -1,7 +1,7 @@
 Create database student;
 
 use student;
-Create table student (studentID INT NOT NULL PRIMARY KEY, firstName Varchar(50), lastName varchar(30), phoneNo varchar(20), email varchar (50));
+Create table student (studentID INT NOT NULL PRIMARY KEY, studentFirstName Varchar(50), studentLastName varchar(30), phoneNo varchar(20), studentEmail varchar (50), studentPassword varchar (20));
 
 
 INSERT INTO student VALUES (1, 'Salman', 'Khan', '88237164', 'salmon@gmail.com', 'b0ll1vard'),

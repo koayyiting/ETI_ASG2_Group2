@@ -11,6 +11,14 @@ body {
     box-shadow: 0px 0px 10px #888888;
 }
 
+.textbox {
+    max-width: 300px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px #888888;
+}
+
 input[type="text"],
 input[type="password"] {
     width: 100%;
@@ -19,7 +27,7 @@ input[type="password"] {
 }
 
 button {
-    background-color: #4CAF50;
+    background-color: #00BBDD;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -28,5 +36,5 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #009cc3;
 }

@@ -15,7 +15,7 @@ function studentRegister(){
     var request = new XMLHttpRequest();
     const form = document.getElementById('studentRegisterForm');
 
-    const curl = 'http://localhost:2479/api/v1/student';
+    const curl = 'http://localhost:3306/api/v1/student';
 
     const studentEmail = form.elements['student_register_email'].value;
     const studentPassword = form.elements['student_register_password'].value;
@@ -34,7 +34,7 @@ function studentRegister(){
         
     }));
     form.reset();
-    alert("Tutor account registered successfuly.");
+    alert("Student account registered successfuly.");
     return false
 }
 
@@ -46,7 +46,7 @@ function studentLogin(){
     console.log(studentEmail);
     console.log(studentPassword);
 
-    const curl = 'http://localhost:2479/api/v1/student?studentEmail=' + encodeURIComponent(studentEmail) + '&studentPassword=' + encodeURIComponent(studentPassword);
+    const curl = 'http://localhost:3306/api/v1/student?StudentEmail=' + encodeURIComponent(StudentEmail) + '&StudentPassword=' + encodeURIComponent(StudentPassword);
     console.log(curl);
 
     request.open("GET", curl);
@@ -54,7 +54,7 @@ function studentLogin(){
       if (request.readyState === 4) {
         if (request.status === 200) {
           // Successful login, redirect to main page
-          location.href = "student_main.html";
+          location.href = "studentmain.html";
         } else if (request.status === 401) {
           // Login failed, handle error
           form.reset();
