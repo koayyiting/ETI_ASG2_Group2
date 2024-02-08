@@ -19,10 +19,12 @@ tutor information based on user input to verify their identity. It utilizes the 
 features of the site, such as creating lesson materials, scheduling lessons, and communicating with different users in the discussion forum.
 
 3. Schedule Microservice
+The Schedule Microservice is a backend service designed to manage schedules for tutoring sessions. It provides functionalities for creating, updating, deleting, and retrieving schedules associated with tutoring lessons. The microservice interacts with other components of the tutoring system, such as the user interface and lesson material database, to facilitate seamless scheduling operations.
 
 4. Booking Microservice
+The Booking Microservice is a backend component responsible for managing bookings for tutoring sessions within a tutoring system. It facilitates the process of scheduling tutoring sessions between students and tutors, ensuring seamless coordination and efficient utilization of tutoring resources. Leveraging a microservices architecture, the Booking Microservice provides a range of functionalities for creating, updating, deleting, and retrieving bookings, enabling users to manage their tutoring schedules effectively.
 
-5. Lesson Material Microservice
+6. Lesson Material Microservice
 The Lesson Material Microservice facilitates efficient management and access to instructional resources within the platform. Authorized instructors can leverage its functionalities to create and curate high-quality learning materials. These materials are then seamlessly made available to all registered users, fostering knowledge acquisition and skill development.
 
 7. Discussion Microservice
