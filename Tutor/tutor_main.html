@@ -28,19 +28,19 @@
 				</a>
 			</li>
 			<li>
-				<a href="#">
-					<i class='bx bxs-book-content' ></i>
+				<a href="../Learning Materials/LM.html">
+					<i class='bx bxs-book-content'></i>
 					<span class="text">Lesson</span>
 				</a>
 			</li>
 			<li>
-				<a href="../Schedule/index.html">
+				<a href="../Schedule/user_schedules.html">
 					<i class='bx bxs-calendar-event' ></i>
 					<span class="text">Schedule</span>
 				</a>
 			</li>
 			<li>
-				<a href="#">
+				<a href="http://localhost:4091/">
 					<i class='bx bxs-conversation' ></i>
 					<span class="text">Forum</span>
 				</a>
@@ -78,13 +78,6 @@
 			</form>
 			<input type="checkbox" id="switch-mode" hidden>
 			<label for="switch-mode" class="switch-mode"></label>
-			<a href="#" class="notification">
-				<i class='bx bxs-bell' ></i>
-				<span class="num">8</span>
-			</a>
-			<a href="#" class="profile">
-				<img src="">
-			</a>
 		</nav>
 		<!-- NAVBAR -->
 
@@ -107,24 +100,24 @@
 
 			<ul class="box-info">
 				<li>
-					<i class='bx bxs-calendar-check' ></i>
+					<i class='bx bxs-book-content' ></i>
 					<span class="text">
-						<h3>1020</h3>
-						<p>New Order</p>
+						<h3>Lesson</h3>
+						<button class="btn btn-primary" onclick="window.location.href='../Learning Materials/LM.html'">View Lessons</button>
 					</span>
 				</li>
 				<li>
-					<i class='bx bxs-group' ></i>
+					<i class='bx bxs-calendar-event'></i>
 					<span class="text">
-						<h3>2834</h3>
-						<p>Visitors</p>
+						<h3>Schedule</h3>
+						<button class="btn btn-primary" onclick="window.location.href='../Schedule/user_schedules.html'">Schedule Lessons</button>
 					</span>
 				</li>
 				<li>
-					<i class='bx bxs-dollar-circle' ></i>
+					<i class='bx bxs-conversation'></i>
 					<span class="text">
-						<h3>$2543</h3>
-						<p>Total Sales</p>
+						<h3>Forum</h3>
+						<button class="btn btn-primary" onclick="window.location.href=forumURL">Chat</button>
 					</span>
 				</li>
 			</ul>
@@ -157,6 +150,10 @@
             console.log('Data not found in localStorage');
         }
     </script>
+
+	<script>
+		var forumURL = "http://localhost:4091/";
+	</script>
 
 	<script src="script.js"></script>
 </body>

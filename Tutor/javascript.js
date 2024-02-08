@@ -85,5 +85,5 @@ function logout() {
   localStorage.clear();
 
   // Redirect to the logout page or any other desired destination
-  window.location.href = "logout.html";
+  window.location.href = "../Tutor/tutor_signup_login.html";
 }
