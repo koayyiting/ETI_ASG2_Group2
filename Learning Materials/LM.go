@@ -37,8 +37,9 @@ func main() {
 
 	// Router
 	router := mux.NewRouter()
-	router.HandleFunc("/lessonmaterial/material/{materialid}", material).Methods("GET", "POST", "DELETE", "OPTIONS")
+	router.HandleFunc("/lessonmaterial/material/{materialid}", material).Methods("POST", "DELETE", "OPTIONS")
 	router.HandleFunc("/lessonmaterial/tutor/{tutorid}", tutormaterial).Methods("GET")
+	router.HandleFunc("/material/{id}", specificmaterial).Methods("GET")
 	router.HandleFunc("/lessonmaterial/all", allmaterials)
 	fmt.Println("Listening at port 4088")
 	log.Fatal(http.ListenAndServe(":4088", router))
@@ -48,18 +49,7 @@ func material(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	fmt.Println("Lesson Material Function")
 
-	//Adding New Materials
-	if r.Method == "GET" {
-		fmt.Println(r.Method + " Method")
-		if _, ok := isExist(params["materialid"]); !ok {
-			materialJSON := struct {
-				LessonMaterials map[string]LessonMaterial `json:"Material"`
-			}{getMaterial(params["materialid"])}
-
-			json.NewEncoder(w).Encode(materialJSON)
-		}
-
-	} else if r.Method == "POST" {
+	if r.Method == "POST" {
 		if body, err := ioutil.ReadAll(r.Body); err == nil {
 			fmt.Println(r.Method + " Method")
 			if err := json.Unmarshal(body, &lm); err == nil {
@@ -120,6 +110,16 @@ func material(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func specificmaterial(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	materialJSON := struct {
+		LessonMaterials map[string]LessonMaterial `json:"Material"`
+	}{getMaterial(params["id"])}
+
+	json.NewEncoder(w).Encode(materialJSON)
+}
+
 // REST API Functions
 func allmaterials(w http.ResponseWriter, r *http.Request) {
 
@@ -136,19 +136,19 @@ func tutormaterial(w http.ResponseWriter, r *http.Request) {
 	var tutorid = params["tutorid"]
 
 	materialJSON := struct {
-		LessonMaterials map[string]LessonMaterial `json:"Materials"`
+		LessonMaterials map[string]LessonMaterial `json:"Material"`
 	}{getTutorMaterial(tutorid)}
 
 	json.NewEncoder(w).Encode(materialJSON)
 }
 
 // [Edit] SQL Functions
-func getMaterials() map[string]LessonMaterial {
+func getMaterial(id string) map[string]LessonMaterial {
 
 	//Return Lesson Materials
-	var materials map[string]LessonMaterial = map[string]LessonMaterial{}
+	var onematerial map[string]LessonMaterial = map[string]LessonMaterial{}
 
-	lessonMtrls, err := db.Query("SELECT * FROM LessonMaterials")
+	lessonMtrls, err := db.Query("SELECT * FROM LessonMaterials WHERE LMID=?", id)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -161,18 +161,18 @@ func getMaterials() map[string]LessonMaterial {
 		_ = lessonMtrls.Scan(&lmID, &lm.TutorID, &lm.Topic, &lm.Summary, &lm.Created)
 
 		//Adding to Materials Map
-		materials[lmID] = lm
+		onematerial[lmID] = lm
 	}
 
-	return materials
+	return onematerial
 }
 
-func getMaterial(id string) map[string]LessonMaterial {
+func getMaterials() map[string]LessonMaterial {
 
 	//Return Lesson Materials
 	var materials map[string]LessonMaterial = map[string]LessonMaterial{}
 
-	lessonMtrls, err := db.Query("SELECT * FROM LessonMaterials WHERE ID=?", id)
+	lessonMtrls, err := db.Query("SELECT * FROM LessonMaterials")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -220,7 +220,7 @@ func isExist(id string) (LessonMaterial, bool) {
 	var lm LessonMaterial
 
 	// [Edit] Lesson Material Values
-	result := db.QueryRow("SELECT * FROM LessonMaterials WHERE ID=?", id)
+	result := db.QueryRow("SELECT * FROM LessonMaterials WHERE LMID=?", id)
 	err := result.Scan(&id, &lm.TutorID, &lm.Topic, &lm.Summary)
 	if err == sql.ErrNoRows {
 		return lm, false
@@ -246,7 +246,7 @@ func editMaterial(id string, lm LessonMaterial) {
 
 func deleteMaterial(id string) (int64, error) {
 	// [Edit] Lesson Material Values
-	result, err := db.Exec("DELETE FROM LessonMaterials WHERE ID=?", id)
+	result, err := db.Exec("DELETE FROM LessonMaterials WHERE LMID=?", id)
 	if err != nil {
 		return 0, err
 	}

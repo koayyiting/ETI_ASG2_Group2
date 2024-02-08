@@ -1,5 +1,7 @@
 var content = document.querySelector("ul.box-info#lmContent");
 
+var updateContent = document.querySelector("div.container#updateCourse")
+
 function getAllLM() {
 
     var GetRequest = new XMLHttpRequest()
@@ -11,6 +13,8 @@ function getAllLM() {
 
         content.innerHTML = "";
 
+        console.log(data)
+
         lmList.forEach((lmId, index) => {
 
             var lm = Object.keys(data.Materials[lmId])
@@ -18,9 +22,10 @@ function getAllLM() {
             //HTML
             var lmItem = document.createElement("li");
 
-            var lmLink = document.createElement("a");
+            var lmLink = document.createElement("button");
+            lmLink.id = lmId
             lmLink.addEventListener("click", () => {
-                lmSummary(lmId)
+                loadSummary(lmId)
             });
 
             console.log(lmId)
@@ -64,19 +69,6 @@ function getAllLM() {
     GetRequest.send()
 }
 
-function formatDate(datetimeStr) {
-    var date = new Date(datetimeStr)
-    var formattedDate = date.toLocaleString('en-US', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-        hour12: true
-    }).replace(/ at /g, ' ');
-
-    return formattedDate
-
-}
-
 function getId() {
 
     var id;
@@ -92,68 +84,105 @@ function getId() {
 
 }
 
-function getTutorId() {
+function loadSummary(lmSummaryId) {
 
-    var tutorId;
-    fetch("http://localhost:5211/api/v1/tutor/tutorobject")
+    fetch("http://localhost:4088/material/" + lmSummaryId)
         .then(response => response.json())
         .then(data => {
-            var tutor = Object.keys(data.Tutor)
-            tutorId = tutor.ID
-        })
+            if(data) {
+                const queryString = new URLSearchParams({id : lmSummaryId});
 
-    return tutorId
+                window.location.href = "../Learning Materials/LMSummary.html?" + queryString;
+
+            } else {
+                console.error("Failed to fetch material data for:", lmSummaryId)
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching material data:", error);
+        });
 }
 
-function lmSummary(id) {
-    
-    var summary = document.querySelector("ul.box-info#lmSummary");
-    var lmTitle = document.getElementById("materialTitle");
+function lmSummary() {
 
-    var GetRequest = new XMLHttpRequest()
-    GetRequest.open("GET", "http://localhost:4088/lessonmaterial/material/" + id)
+    const urlParams = new URLSearchParams(window.location.search);
+    const summaryId = urlParams.get("id");
+
+    if (!summaryId){
+        console.error("Missing ID in query string");
+        return;
+    }
+
+    //HTML Element
+    var lmMaterialId = document.getElementById("lmMaterialID");
+    var lmTitle = document.getElementById("materialTitle");
+    var lmParagraph = document.getElementById("lmSummary");
+    var lmDate = document.getElementById("lmCreated");
+
+
+    console.log(lmMaterialId.textContent);
+    console.log(lmTitle.textContent);
+    console.log(lmParagraph.textContent);
+    console.log(lmDate.textContent)
+
+    var GetRequest = new XMLHttpRequest();
+    GetRequest.open("GET", "http://localhost:4088/material/" + summaryId)
 
     GetRequest.onload = function () {
         var data = JSON.parse(this.response)
-        var lmNest = Object.keys(data.Material)
+        var lmObj = Object.keys(data.Material)
 
-        console.log(lmNest)
+        console.log(lmObj)
+        lmMaterialId.textContent = lmObj;
 
-        summary.innerHTML = "";
+        lmTitle.textContent = (data.Material[lmObj]['Topic']);
+        lmParagraph.textContent = (data.Material[lmObj]['Summary']);
+        lmCreated.textContent = "Created On " + (formatDate(data.Material[lmObj]['Created on']));
 
-        lmNest.forEach((lmId, index) => {
+        // lmObj.forEach((lmId, index) => {
 
-            var lm = Object.keys(data.Material[lmId])
+        //     var lm = Object.keys(data.Material[lmId])
+        //     console.log(lm)
 
-            //HTML
-            var lmSummary = document.createElement("p");
-            var lmCreated = document.createElement("span");
+        //     lm.forEach((material, index2) => {
 
-            lm.forEach((material, index2) => {
+        //         console.log((data.Material['1']['Topic']))
+        //         lmTitle.textContent = ((material == "Topic") ? data.Materials[lmObj][material] : '')
 
-                lmTitle.innerHTML +=  ((material == "Topic") ? data.Materials[lmId][material] : '')
-                lmSummary.innerHTML +=((material == "Summary") ? data.Materials[lmId][material] : '')
-                lmCreated.innerHTML += ((material == "Created on") ? formatDate(data.Materials[lmId][material]) : '')
+        //         console.log((data.Material['1']['Summary']))
+        //         lmParagraph.textContent = ((material == "Summary") ? data.Materials[lmObj][material] : '')
 
-            })
+        //         console.log(formatDate(data.Materials[lmObj][material]))
+        //         lmDate.textContent = ((material == "Created on") ? formatDate(data.Materials[lmObj][material]) : '')
 
-            console.log(summary)
+        //     })
 
-            summary.appendChild(lmSummary);
-            summary.appendChild(lmCreated)
+        // });
 
-        });
     }
 
-    window.location.href="../Learning Materials/LMSummary.html"
-    
+    GetRequest.send()
+
+}    
+
+function formatDate(datetimeStr) {
+    var date = new Date(datetimeStr)
+    var formattedDate = date.toLocaleString('en-US', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour12: true
+    }).replace(/ at /g, ' ');
+
+    return formattedDate
+
 }
 
 function addLM() {
 
     var addRequest = new XMLHttpRequest()
     const newID = getId()
-    addRequest.open("POST", "http://localhost:5000//lessonmaterial/" + newID)
+    addRequest.open("POST", "http://localhost:4088//lessonmaterial/material/" + newID)
 
     console.log(addRequest)
 
@@ -161,7 +190,7 @@ function addLM() {
         "TutorID" : document.getElementById("tutorId").value,
         "Topic": document.getElementById("topic").value,
         "Summary": document.getElementById("summary").value,
-        "Created On": $now(),
+        "Created on": $now(),
     }
 
     addRequest.onload = function () {
@@ -176,5 +205,71 @@ function addLM() {
 
     addRequest.send(JSON.stringify(newLMJSON))
 
+}
+
+function editLM(TutorID, Topic, Summary, CreatedOn) {
+
+    updateContent.innerHTML = (
+        "<form class=\"login active\" onsubmit=\"return updateLM()\">" +
+        "<a href=\"../Learning Materials/LM.html\">"+
+            "<i class='bx bxs-arrow-to-left' id=\"backbtn\" title=\"Back to Learning Material\" ></i>" +
+        "</a>"+
+        "<h2 class=\"title\">Update Learning Material</h2>" +
+        "<div class=\"form-group\">" +
+            "<label for=\"tutorid\">Tutor ID</label>" +
+            "<div class=\"input-group\">" +
+                "<input type=\"text\" id=\"tutorid\" placeholder=\"Tutor ID\">" + TutorID +
+            "</div>" +
+            "<span class=\"help-text\">Required</span>" +
+        "</div>" +
+        "<div class=\"form-group\">"+
+            "<label for=\"topic\">Topic</label>"+
+            "<div class=\"input-group\">"+
+                "<input type=\"text\" id=\"topic\" placeholder=\"Topic\">" + Topic +
+            "</div>" +
+            "<span class=\"help-text\">Required</span>" +
+        "</div>" +
+        "<div class=\"form-group\">" +
+            "<label for=\"topic\">Summary</label>" +
+            "<div class=\"input-group\">" +
+                "<textarea name=\"opinion\" rows=\"7\" type=\"text\" placeholder=\"Summary\" id=\"summary\">" + Summary +
+                "</textarea>" +
+            "</div>" +
+            "<span class=\"help-text\">Required</span>" +
+        "</div>" +
+        
+        "<button class=\"btn-submit\">Update</button>" +
+
+    "</form>"
+    )
+}
+
+function updateLM() {
+
+    var updateRequest = new XMLHttpRequest()
+    const id = document.getElementById("Id").value
+    
+    updateRequest.open("PUT", "http://localhost:4088/lessonmaterial/material/"+id)
+
+    const updatedLMJSON = {
+        "TutorID" : document.getElementById("tutorId").value,
+        "Topic": document.getElementById("topic").value,
+        "Summary": document.getElementById("summary").value,
+        "Created on": $now(),
+    }
+
+    updateRequest.onload = function () {
+        if(updateRequest.status == 202) {
+            alert('Learning Material is successfully created')
+            windows.location.href="../Learning Materials/LM.html"
+
+        } else if (updateRequest.status == 404) {
+            alert('Learning Material is not created')
+            windows.location.href="../Learning Materials/LM.html"
+        }
+    }
+
+    updateRequest.send(JSON.stringify(updatedLMJSON))
+    return false
 
 }
