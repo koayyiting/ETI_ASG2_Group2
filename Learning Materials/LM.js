@@ -1,6 +1,5 @@
 var content = document.querySelector("ul.box-info#lmContent");
-
-var updateContent = document.querySelector("div.container#updateCourse")
+const tutor_id = parseInt(localStorage.getItem('tutorId'));
 
 function getAllLM() {
 
@@ -44,14 +43,12 @@ function getAllLM() {
             lm.forEach((material, index2) => {
                 lmHeader.innerHTML +=  ((material == "Topic") ? data.Materials[lmId][material] : '')
                 lmCreated.innerHTML += ((material == "Created on") ? formatDate(data.Materials[lmId][material]) : '')
-                // lmSummary.innerHTML +=((material == "Summary") ? data.Materials[lmId][material] : '')
             })
 
             console.log(lmItem)
 
             lmLink.appendChild(lmIcon)
             lmBody.appendChild(lmHeader);
-            // lmBody.appendChild(lmSummary);
 
             var brline = document.createElement("br")
             lmBody.appendChild(brline)
@@ -139,26 +136,6 @@ function lmSummary() {
         lmParagraph.textContent = (data.Material[lmObj]['Summary']);
         lmCreated.textContent = "Created On " + (formatDate(data.Material[lmObj]['Created on']));
 
-        // lmObj.forEach((lmId, index) => {
-
-        //     var lm = Object.keys(data.Material[lmId])
-        //     console.log(lm)
-
-        //     lm.forEach((material, index2) => {
-
-        //         console.log((data.Material['1']['Topic']))
-        //         lmTitle.textContent = ((material == "Topic") ? data.Materials[lmObj][material] : '')
-
-        //         console.log((data.Material['1']['Summary']))
-        //         lmParagraph.textContent = ((material == "Summary") ? data.Materials[lmObj][material] : '')
-
-        //         console.log(formatDate(data.Materials[lmObj][material]))
-        //         lmDate.textContent = ((material == "Created on") ? formatDate(data.Materials[lmObj][material]) : '')
-
-        //     })
-
-        // });
-
     }
 
     GetRequest.send()
@@ -184,10 +161,8 @@ function addLM() {
     const newID = getId()
     addRequest.open("POST", "http://localhost:4088//lessonmaterial/material/" + newID)
 
-    console.log(addRequest)
-
     const newLMJSON = {
-        "TutorID" : document.getElementById("tutorId").value,
+        "TutorID" : tutor_id,
         "Topic": document.getElementById("topic").value,
         "Summary": document.getElementById("summary").value,
         "Created on": $now(),
