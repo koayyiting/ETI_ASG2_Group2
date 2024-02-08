@@ -2,22 +2,21 @@
 -- GRANT ALL ON *.* TO 'schedule_system'@'localhost';
 
 -- SELECT User, Host FROM mysql.user WHERE User = 'schedule_system' AND Host = 'localhost';
--- CREATE DATABASE IF NOT EXISTS ETI_Schedule;
+CREATE DATABASE IF NOT EXISTS ETI_Schedule;
 USE ETI_Schedule;
 
 -- drop table Schedule;
--- CREATE TABLE IF NOT EXISTS Schedule (
---     ScheduleID INT AUTO_INCREMENT PRIMARY KEY,
---     TutorID INT NOT NULL,
---     LessonID INT NOT NULL,
--- --     ScheduleDate DATE NOT NULL,
---     StartTime datetime NOT NULL,
---     EndTime datetime NOT NULL,
---     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- , 
--- --     FOREIGN KEY (tutor_id) REFERENCES tutorsdb.tutors(id),
--- --     FOREIGN KEY (lesson_id) REFERENCES lessonsdblessons(id)
--- );
+CREATE TABLE IF NOT EXISTS Schedule (
+    ScheduleID INT AUTO_INCREMENT PRIMARY KEY,
+    TutorID INT NOT NULL,
+    LessonID INT NOT NULL,
+    LessonName varchar(100),
+    Location varchar(1000),
+    StartTime datetime NOT NULL,
+    EndTime datetime NOT NULL,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- , 
+);
 
 -- insert into Booking (StudentName, StudentEmail, LessonID) values("Zi Yi","test","1");
 -- DELETE FROM Booking WHERE ID = 1;
