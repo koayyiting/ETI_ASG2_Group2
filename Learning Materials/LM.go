@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -42,7 +42,13 @@ func main() {
 	router.HandleFunc("/material/{id}", specificmaterial).Methods("GET")
 	router.HandleFunc("/lessonmaterial/all", allmaterials)
 	fmt.Println("Listening at port 4088")
-	log.Fatal(http.ListenAndServe(":4088", router))
+	http.ListenAndServe(":4088",
+		handlers.CORS(
+			handlers.AllowedOrigins([]string{"*"}),
+			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}),
+			handlers.AllowedHeaders([]string{"Origin", "X-Api-Key", "X-Requested-With", "Content-Type", "Accept", "Authorization"}),
+			handlers.AllowCredentials(),
+		)(router))
 }
 
 func material(w http.ResponseWriter, r *http.Request) {
