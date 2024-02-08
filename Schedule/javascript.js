@@ -1,7 +1,6 @@
 //display all the schedules
 function listSchedules() {
     // Make a GET request to the server endpoint
-    const tutor_id = parseInt(localStorage.getItem('tutorId'));
     const url = `http://localhost:1000/api/v1/getSchedules/` + tutor_id;
     fetch(url)
       .then(response => {

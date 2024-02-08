@@ -37,7 +37,8 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/api/v1/schedule", newSchedule).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/v1/getSchedules/{tid}", getSchedules).Methods("GET", "OPTIONS")
-	router.HandleFunc("/api/v1/oneSchedule/{sid}", oneSchedule).Methods("PUT", "DELETE", "OPTIONS")
+	router.HandleFunc("/api/v1/getAllSchedules", getAllSchedules).Methods("GET")
+	router.HandleFunc("/api/v1/oneSchedule/{sid}", oneSchedule).Methods("GET", "PUT", "DELETE", "OPTIONS")
 	fmt.Println("Listening at port 1000")
 	http.ListenAndServe(":1000",
 		handlers.CORS(
@@ -79,6 +80,51 @@ func retrieveSchedules(tid string) ([]Schedule, error) {
 	openDB()
 	defer db.Close()
 	rows, err := db.Query("SELECT ScheduleID, TutorID, LessonID, LessonName, Location, StartTime, EndTime FROM Schedule WHERE TutorID = ?", tid)
+	// rows, err := db.Query("SELECT * FROM Schedule WHERE TutorID = ?", tid)
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+	var schedules []Schedule
+	var startTimeStr string
+	var endTimeStr string
+
+	for rows.Next() {
+		var schedule Schedule
+		if err := rows.Scan(&schedule.ScheduleID, &schedule.TutorID, &schedule.LessonID, &schedule.LessonName, &schedule.Location, &startTimeStr, &endTimeStr); err != nil {
+			return nil, err
+		}
+		sgt, _ := time.LoadLocation("Asia/Singapore")
+		schedule.StartTime, _ = time.ParseInLocation("2006-01-02 15:04:05", startTimeStr, sgt)
+		schedule.EndTime, _ = time.ParseInLocation("2006-01-02 15:04:05", endTimeStr, sgt)
+		fmt.Println(schedule)
+		schedules = append(schedules, schedule)
+	}
+	return schedules, nil
+}
+
+func getAllSchedules(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		if schedules, err := retrieveAllSchedules(); err == nil {
+			w.WriteHeader(http.StatusAccepted) //202
+			if schedulesJSON, err := json.Marshal(schedules); err == nil {
+				w.Write(schedulesJSON)
+			} else {
+				fmt.Println(err)
+			}
+		} else {
+			w.WriteHeader(http.StatusConflict)
+		}
+	}
+}
+
+func retrieveAllSchedules() ([]Schedule, error) {
+	// func retrieveSchedules(tid int) ([]Schedule, error) {
+	fmt.Println("In retrieveSchedules function")
+	openDB()
+	defer db.Close()
+	rows, err := db.Query("SELECT ScheduleID, TutorID, LessonID, LessonName, Location, StartTime, EndTime FROM Schedule")
 	// rows, err := db.Query("SELECT * FROM Schedule WHERE TutorID = ?", tid)
 	if err != nil {
 		return nil, err
@@ -144,6 +190,17 @@ func oneSchedule(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("in oneSchedule")
 	id := mux.Vars(r)["sid"]
 	switch r.Method {
+	case http.MethodGet:
+		if schedule, err := retrieveOneSchedule(id); err == nil {
+			w.WriteHeader(http.StatusAccepted) //202
+			if scheduleJSON, err := json.Marshal(schedule); err == nil {
+				w.Write(scheduleJSON)
+			} else {
+				fmt.Println(err)
+			}
+		} else {
+			w.WriteHeader(http.StatusConflict)
+		}
 	case http.MethodPut: //update trip status
 		if body, err := io.ReadAll(r.Body); err == nil {
 			var schedule Schedule
@@ -170,6 +227,28 @@ func oneSchedule(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusConflict)
 		}
 	}
+}
+
+func retrieveOneSchedule(scheduleID string) (Schedule, error) {
+	fmt.Println("In retrieveOneSchedule function")
+	openDB()
+	defer db.Close()
+
+	var schedule Schedule
+	var startTimeStr string
+	var endTimeStr string
+
+	err := db.QueryRow("SELECT ScheduleID, TutorID, LessonID, LessonName, Location, StartTime, EndTime FROM Schedule WHERE ScheduleID = ?", scheduleID).Scan(&schedule.ScheduleID, &schedule.TutorID, &schedule.LessonID, &schedule.LessonName, &schedule.Location, &startTimeStr, &endTimeStr)
+	if err != nil {
+		return Schedule{}, err
+	}
+
+	sgt, _ := time.LoadLocation("Asia/Singapore")
+	schedule.StartTime, _ = time.ParseInLocation("2006-01-02 15:04:05", startTimeStr, sgt)
+	schedule.EndTime, _ = time.ParseInLocation("2006-01-02 15:04:05", endTimeStr, sgt)
+	fmt.Println(schedule)
+
+	return schedule, nil
 }
 
 func updateSchedule(schedule Schedule) error {
