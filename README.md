@@ -33,6 +33,18 @@ delete the question and once the user logs out another user can log in and comme
 ## Architecture Diagram
 ![ETI ASG2 Architecture Diagram](https://github.com/koayyiting/ETI_ASG2_Group2/assets/93900155/bc41ca39-34f8-4bd5-8807-3452f053174b)
    - Each microservice has its own MySQL database
+   - Users: These can be students, teachers, or even administrators. They interact with the system through the User Interface (UI), which can be a website or a mobile app.
+        Microservices: The system is divided into multiple microservices, each responsible for a specific task. This makes the system more modular and scalable. Here are             some of the microservices shown in the diagram:
+         - Student: Manages student accounts and data.
+         - Tutor: Manages tutor accounts and data.
+         - Schedule: Manages the scheduling of lessons.
+         - Booking: Manages the booking of lessons.
+         - Lesson Material: Manages the lesson materials.
+         - Discussion: Manages the discussion forums.
+   - Databases: Each microservice has its own database to store its data.
+   - APIs: The microservices communicate with each other through APIs (Application Programming Interfaces). This allows the microservices to be independent and loosely coupled.
+
+Overall, the architecture of this e-learning system is designed to be modular, scalable, and fault-tolerant. This means that the system can be easily expanded to accommodate more users or features, and it can continue to operate even if one of the microservices fails.
 
 ## Instructions for setting up and running our solution
 1. Database Setup
