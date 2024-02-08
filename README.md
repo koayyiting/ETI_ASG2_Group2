@@ -23,8 +23,9 @@ features of the site, such as creating lesson materials, scheduling lessons, and
 4. Booking Microservice
 
 5. Lesson Material Microservice
+The Lesson Material Microservice facilitates efficient management and access to instructional resources within the platform. Authorized instructors can leverage its functionalities to create and curate high-quality learning materials. These materials are then seamlessly made available to all registered users, fostering knowledge acquisition and skill development.
 
-6. Discussion Microservice
+7. Discussion Microservice
 As for the discussion form you are able to log in as a user and can post question edit the question and
 delete the question and once the user logs out another user can log in and comment on the post made by other previous owner.
 
