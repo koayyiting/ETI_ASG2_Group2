@@ -21,7 +21,7 @@ function getAllLM() {
             //HTML
             var lmItem = document.createElement("li");
 
-            var lmLink = document.createElement("button");
+            var lmLink = document.createElement("a");
             lmLink.id = lmId
             lmLink.addEventListener("click", () => {
                 loadSummary(lmId)
@@ -195,12 +195,11 @@ function addLM() {
         }
     }
 
-    
     addRequest.send(JSON.stringify(newLMJSON))
 
 }
 
-function editLM(TutorID, Topic, Summary, CreatedOn) {
+function editLM(TutorID, Topic, Summary) {
 
     updateContent.innerHTML = (
         "<form class=\"login active\" onsubmit=\"return updateLM()\">" +

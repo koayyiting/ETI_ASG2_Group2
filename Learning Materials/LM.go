@@ -230,7 +230,7 @@ func isExist(id string) (LessonMaterial, bool) {
 }
 func addMaterial(id string, lm LessonMaterial) {
 	// [Edit] Lesson Material Values
-	_, err := db.Exec("INSERT INTO LessonMaterials VALUE (?,?,?,?,?)", id, lm.TutorID, lm.Topic, lm.Summary, currentTime)
+	_, err := db.Exec("INSERT INTO LessonMaterials VALUE (?,?,?,?,?)", id, lm.TutorID, lm.Topic, lm.Summary, lm.Created)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -238,7 +238,7 @@ func addMaterial(id string, lm LessonMaterial) {
 
 func editMaterial(id string, lm LessonMaterial) {
 	// [Edit] Lesson Material Values
-	_, err := db.Exec("UPDATE LessonMaterials SET TutorID=? Topic=? Summary=? WHERE ID=?", lm.TutorID, lm.Topic, lm.Summary, id)
+	_, err := db.Exec("UPDATE LessonMaterials SET TutorID=? Topic=? Summary=? WHERE LMID=?", lm.TutorID, lm.Topic, lm.Summary, id)
 	if err != nil {
 		panic(err.Error)
 	}
