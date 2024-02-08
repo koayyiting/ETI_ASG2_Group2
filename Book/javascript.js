@@ -1,6 +1,9 @@
 function listBookings() {
     // Make a GET request to the server endpoint
-    const url = `http://localhost:1765/api/v1/getBookings`;
+    const studentid = localStorage.getItem('studentId');
+
+    const url = `http://localhost:1765/api/v1/getBookings/` + studentid;
+    console.log(url);
     fetch(url)
       .then(response => {
         if (!response.ok) {
@@ -150,6 +153,7 @@ function listAvailableSchedule() {
 
 function create_booking(sid){
     var request = new XMLHttpRequest();
+    const studentid = localStorage.getItem('studentId');
 
     const curl = 'http://localhost:1765/api/v1/book/' + sid;
     console.log(sid)
@@ -175,8 +179,16 @@ function create_booking(sid){
     };
 
     request.send(JSON.stringify({
-        "student_id": 1,
+        "student_id": parseInt(studentid),
         "schedule_id": sid
     }));
     return false //prevent default submission
+}
+
+function logout() {
+    // Clear localStorage
+    localStorage.clear();
+
+    // Redirect to the logout page or any other desired destination
+    window.location.href = "../Student/student_signup_login.html";
 }
