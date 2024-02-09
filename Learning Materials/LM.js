@@ -89,6 +89,9 @@ function lmSummary() {
     const urlParams = new URLSearchParams(window.location.search);
     const summaryId = urlParams.get("id");
 
+    var editButton = document.getElementById("editBtn");
+    console.log(editButton.textContent)
+
     if (!summaryId){
         console.error("Missing ID in query string");
         return;
@@ -116,9 +119,19 @@ function lmSummary() {
         console.log(lmObj)
         lmMaterialId.textContent = lmObj;
 
-        lmTitle.textContent = (data.Material[lmObj]['Topic']);
-        lmParagraph.textContent = (data.Material[lmObj]['Summary']);
-        lmCreated.textContent = "Created On " + (formatDate(data.Material[lmObj]['Created on']));
+        //Material Attribute Values
+        var tutor = (data.Material[lmObj]['TutorID'])
+        var title = (data.Material[lmObj]['Topic']);
+        var para = (data.Material[lmObj]['Summary']);
+        var create = (formatDate(data.Material[lmObj]['Created on']));
+
+        lmTitle.textContent = title
+        lmParagraph.textContent = para
+        lmCreated.textContent = "Created On " + create;
+
+        editButton.addEventListener('click', ()=> {
+            loadUpdate(tutor,title,para)
+        });
 
     }
 
@@ -207,85 +220,69 @@ function addLM() {
 
 }
 
-function loadEditLM(lmUpdateId) {
+function loadUpdate(tutorId, topic, summary) {
 
-    fetch("http://localhost:4088/material/" + lmUpdateId)
-        .then(response => response.json())
-        .then(data => {
-            if(data) {
-                const queryString = new URLSearchParams({id : lmUpdateId});
-                window.location.href = "../Learning Materials/LMUpdate.html?" + queryString;
+    //HTML Element
+    var lmTutor = document.getElementById("tutorid");
+    var lmTopic = document.getElementById("topic");
+    var lmSummary = document.getElementById("summary");
+    
+    console.log(lmTutor.textContent);
+    console.log(lmTopic.textContent);
+    console.log(lmSummary.textContent);
 
-            } else {
-                console.error("Failed to fetch material data for:", lmUpdateId)
-            }
-        })
-        .catch(error => {
-            console.error("Error fetching material data:", error);
-        });
+    lmTutor.innerHTML += tutorId
+    lmTopic.innerHTML += topic
+    lmSummary.innerHTML += summary
+
 }
 
-// function updateLM() {
+function updateLM() {
 
-//     const urlParams = new URLSearchParams(window.location.search);
-//     const loadId = urlParams.get("id");
+    const urlParams = new URLSearchParams(window.location.search);
+    const updateId = urlParams.get("id");
 
-//     if (!summaryId){
-//         console.error("Missing ID in query string");
-//         return;
-//     }
+    if (!summaryId){
+        console.error("Missing ID in query string");
+        return;
+    }
 
-//     //HTML Element
-//     var lmTutor = document.getElementById("tutorid");
-//     var lmTopic = document.getElementById("topic");
-//     var lmSummary = document.getElementById("summary");
+    var loadRequest = new XMLHttpRequest();
+    loadRequest.open("PUT", "http://localhost:4088/lessonmaterial/material/"+ updateId)
 
+    const updatedLMJSON = {
+        "TutorID" : parseInt(document.getElementById("tutorId").value),
+        "Topic": document.getElementById("topic").value,
+        "Summary": document.getElementById("summary").value,
+    }
 
-//     console.log(lmTitle.textContent);
-//     console.log(lmTopic.textContent);
-//     console.log(lmSummary.textContent);
+    updateRequest.onload = function () {
+        if(updateRequest.status == 202) {
+            alert('Learning Material is successfully created')
+            windows.location.href="../Learning Materials/LM.html"
 
-//     var loadRequest = new XMLHttpRequest();
-//     loadRequest.open("GET", "http://localhost:4088/material/"+loadId)
+        } else if (updateRequest.status == 404) {
+            alert('Learning Material is not created')
+            windows.location.href="../Learning Materials/LM.html"
+        }
+    }
 
-//     loadRequest.onload = function() {
-//         var data = JSON.parse(this.response)
-//         var lmObj = Object.keys(data.Material)
+    updateRequest.send(JSON.stringify(updatedLMJSON))
+    return false
+}
+    // fetch("http://localhost:4088/material/" + lmUpdateId)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         if(data) {
+    //             const queryString = new URLSearchParams({id : lmUpdateId});
 
-//         console.log(lmObj)
-//         lmMaterialId.textContent = lmObj;
+    //             window.location.href = "../Learning Materials/LMUpdate.html?" + queryString;
 
-//         lmTutor.textContent = (data.Material[lmObj]['TutorID']);
-//         lmTopic.textContent = (data.Material[lmObj]['Topic']);
-//         lmTopic.textContent = (data.Material[lmObj]['Summary']);
-//     }
+    //         } else {
+    //             console.error("Failed to fetch material data for:", lmUpdateId)
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error("Error fetching material data:", error);
+    //     });
 
-//     loadRequest.send()
-// }
-
-// function updateLM(updateId) {
-
-//     var loadRequest = new XMLHttpRequest();
-//     loadRequest.open("PUT", "http://localhost:4088/lessonmaterial/material/"+ updateId)
-
-//     const updatedLMJSON = {
-//         "TutorID" : document.getElementById("tutorId").value,
-//         "Topic": document.getElementById("topic").value,
-//         "Summary": document.getElementById("summary").value,
-//     }
-
-// }
-    
-//     updateRequest.onload = function () {
-//         if(updateRequest.status == 202) {
-//             alert('Learning Material is successfully created')
-//             windows.location.href="../Learning Materials/LM.html"
-
-//         } else if (updateRequest.status == 404) {
-//             alert('Learning Material is not created')
-//             windows.location.href="../Learning Materials/LM.html"
-//         }
-//     }
-
-//     updateRequest.send(JSON.stringify(updatedLMJSON))
-//     return false
