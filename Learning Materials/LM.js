@@ -193,7 +193,7 @@ function addLM() {
 
      //Create Lesson Material JSON
      const newLMJSON = {
-        "TutorID" : parseInt(document.getElementById("tutorid").value),
+        "TutorID" : parseInt(tutor_id),
         "Topic": document.getElementById("topic").value,
         "Summary": document.getElementById("summary").value,
         "Created on": createdDate,
