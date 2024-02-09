@@ -201,7 +201,7 @@ func oneSchedule(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusConflict)
 		}
-	case http.MethodPut: //update trip status
+	case http.MethodPut: //update status
 		if body, err := io.ReadAll(r.Body); err == nil {
 			var schedule Schedule
 			if err := json.Unmarshal(body, &schedule); err == nil {
@@ -209,8 +209,8 @@ func oneSchedule(w http.ResponseWriter, r *http.Request) {
 				if err := updateSchedule(schedule); err == nil {
 					fmt.Println(schedule)
 					w.WriteHeader(http.StatusAccepted) //202
-					tripJSON, _ := json.Marshal(schedule)
-					w.Write(tripJSON)
+					scheduleJSON, _ := json.Marshal(schedule)
+					w.Write(scheduleJSON)
 				} else {
 					w.WriteHeader(http.StatusConflict)
 				}

@@ -50,7 +50,7 @@ function listBookings() {
                                              <td>${formattedStartTime}</td>
                                              <td>${formattedEndTime}</td>
                                              <td>${scheduleInfo.location}</td>
-                                             <td><button style="border:none; padding: 5px 15px; border-radius:10px;" onclick="return deleteBooking(${booking.booking_id})">Delete</button></td>`;
+                                             <td><button style="border:none; padding: 5px 15px; border-radius:10px;" onclick="return deleteBooking(${booking.booking_id})">Cancel</button></td>`;
                         })
                         .catch(error => console.error('Error fetching schedule info:', error));
                 });
@@ -116,7 +116,7 @@ function deleteBooking(bookingID) {
     const url = `http://localhost:1765/api/v1/oneBooking/${bookingID}`;
   
     // Confirm deletion with the user (you can customize this)
-    if (confirm("Are you sure you want to delete this Booking?")) {
+    if (confirm("Are you sure you want to cancel this Booking?")) {
         // Make a DELETE request to the server endpoint
         fetch(url, {
           method: 'DELETE',
@@ -194,8 +194,8 @@ function listAvailableSchedule() {
                                 </td>`;
                             });
         } else{
-            var emptyMessageDiv = document.getElementById('empty_message');
-            emptyMessageDiv.innerHTML = `<p style="padding: 20px 0px">You have 0 Schedule</p>`;
+            var emptyMessageDiv = document.getElementById('empty_message_available');
+            emptyMessageDiv.innerHTML = `<p style="padding: 20px 0px">0 Lesson Available</p>`;
         }
       })
       .catch(error => console.error('Error fetching user details:', error));

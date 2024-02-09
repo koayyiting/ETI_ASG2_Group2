@@ -1,5 +1,7 @@
 //display all the schedules
 function listSchedules() {
+    const tutor_id = parseInt(localStorage.getItem('tutorId'));
+
     // Make a GET request to the server endpoint
     const url = `http://localhost:1000/api/v1/getSchedules/` + tutor_id;
     fetch(url)
@@ -49,7 +51,7 @@ function listSchedules() {
                                 </td>`;
                             });
         } else{
-            var emptyMessageDiv = document.getElementById('empty_message');
+            var emptyMessageDiv = document.getElementById('empty_message_schedule');
             emptyMessageDiv.innerHTML = `<p style="padding: 20px 0px">You have 0 Schedule</p>`;
         }
       })
@@ -194,7 +196,7 @@ async function update_schedule(sid) {
     // Create XMLHttpRequest object
     const url = `http://localhost:1000/api/v1/oneSchedule/`+sid;
     console.log(url);
-
+    console.log("Before fetch");
     try {
         const response = await fetch(url, {
         method: 'PUT',
@@ -210,13 +212,12 @@ async function update_schedule(sid) {
             "lesson_name": topicName
         }),
         });
-        console.log("test");
-        if (response.ok) {
-        console.log("Update successful");
-        window.location.href = "user_schedules.html";
+        if (response.status >= 200 && response.status < 400) {
+            console.log("Update successful");
+            window.location.href = "user_schedules.html";
         } else {
-        const errorText = await response.text();
-        alert("Error updating the Schedule Details. Status: " + response.status + "\n" + errorText);
+            const errorText = await response.text();
+            alert("Error updating the Schedule Details. Status: " + response.status + "\n" + errorText);
         }
     } catch (error) {
         console.error("Error updating the Schedule Details:", error);
@@ -273,20 +274,22 @@ function logout() {
 function populateDropdown() {
     var request = new XMLHttpRequest();
     const tutorId = localStorage.getItem('tutorId');
+    console.log(tutorId);
     const url = `http://localhost:4088/lessonmaterial/tutor/` + tutorId;
     request.open("GET", url);
     request.onload = function () {
         var data = JSON.parse(this.response);
         if (request.status >= 200 && request.status < 400) {
-            var lmList = Object.keys(data.Materials);
+            console.log("here")
             // Get the dropdown content element
             const dropdownContent = document.getElementById('dropdown-content');
             // Clear previous dropdown content
             dropdownContent.innerHTML = '';
+            console.log(data)
             // Iterate over the Material object and create dropdown list items
-            for (const key in data.Materials) {
-                if (data.Materials.hasOwnProperty(key)) {
-                    const topic = data.Materials[key].Topic;
+            for (const key in data.Material) {
+                if (data.Material.hasOwnProperty(key)) {
+                    const topic = data.Material[key].Topic;
                     const lessonId = key; // Get the lesson ID
                     const listItem = document.createElement('a');
                     listItem.href = '#';
@@ -321,15 +324,14 @@ function populateDropdown_update(urlParams) {
     request.onload = function () {
         var data = JSON.parse(this.response);
         if (request.status >= 200 && request.status < 400) {
-            var lmList = Object.keys(data.Materials);
             // Get the dropdown content element
             const dropdownContent = document.getElementById('dropdown-content');
             // Clear previous dropdown content
             dropdownContent.innerHTML = '';
             // Iterate over the Material object and create dropdown list items
-            for (const key in data.Materials) {
-                if (data.Materials.hasOwnProperty(key)) {
-                    const topic = data.Materials[key].Topic;
+            for (const key in data.Material) {
+                if (data.Material.hasOwnProperty(key)) {
+                    const topic = data.Material[key].Topic;
                     const lessonId = key; // Get the lesson ID
                     const listItem = document.createElement('a');
                     listItem.href = '#';
@@ -346,6 +348,7 @@ function populateDropdown_update(urlParams) {
                         // Change the text of the dropdown button to the selected topic
                         document.querySelector('.dropbtn').textContent = topic;
                     });
+                    const urlParams = new URLSearchParams(window.location.search);
                     // Check if lessonId and topicName are not null to preset the dropdown
                     if (lessonId === decodeURIComponent(urlParams.get('lesson_id_update')) && topic === decodeURIComponent(urlParams.get('topic_name_update'))) {
                         listItem.classList.add('selected');

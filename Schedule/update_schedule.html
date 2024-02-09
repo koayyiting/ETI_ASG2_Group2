@@ -21,29 +21,30 @@
 			<i class='bx bxs-smile'></i>
 			<span class="text">FrEd</span>
 		</a>
+	
 		<ul class="side-menu top">
 			<li>
-				<a href="#">
+				<a href="../Tutor/tutor_main.html">
 					<i class='bx bxs-home' ></i>
 					<span class="text">Home</span>
 				</a>
 			</li>
 			<li>
 				<a href="../Learning Materials/LM.html">
-					<i class='bx bxs-book-content' ></i>
+					<i class='bx bxs-book-content'></i>
 					<span class="text">Lesson</span>
+				</a>
+			</li>
+			<li class="active">
+				<a href="../Schedule/user_schedules.html">
+					<i class='bx bxs-calendar-event' ></i>
+					<span class="text">Schedule</span>
 				</a>
 			</li>
 			<li>
 				<a href="http://localhost:4091/">
 					<i class='bx bxs-conversation' ></i>
 					<span class="text">Forum</span>
-				</a>
-			</li>
-			<li class="active">
-				<a href="#">
-					<i class='bx bxs-calendar-event' ></i>
-					<span class="text">Schedule</span>
 				</a>
 			</li>
 		</ul>
@@ -80,6 +81,7 @@
 		<main>
 			<div class="head-title">
 				<div class="left">
+					<h1>Schedule</h1>
 					<ul class="breadcrumb">
 						<li>
 							<a class="active" href="user_schedules.html" style="color:grey;">My Schedule</a>
@@ -152,19 +154,22 @@
     <script>
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
-            const scheduleId = decodeURIComponent(urlParams.get('schedule_id_update'));
-            const lessonId = decodeURIComponent(urlParams.get('lesson_id_update'));
-            const topicName = decodeURIComponent(urlParams.get('topic_name_update'));
-            const location = decodeURIComponent(urlParams.get('location_schedule_update'));
-            const startTime = decodeURIComponent(urlParams.get('starttime_update'));
-            const endTime = decodeURIComponent(urlParams.get('endtime_update'));
 
-            // Set values in form fields
-            document.getElementById('lesson_id_update').value = lessonId;
-            document.getElementById('topic_name_update').value = topicName;
-            document.getElementById('location_schedule_update').value = location;
-            document.getElementById('starttime_schedule_update').value = startTime.replace(/\+.*/, '');
-            document.getElementById('endtime_schedule_update').value = endTime.replace(/\+.*/, '');
+			// Get the values from URL parameters if they exist, otherwise use default values or handle the absence as needed
+			const scheduleId = urlParams.has('schedule_id_update') ? decodeURIComponent(urlParams.get('schedule_id_update')) : '';
+			const lessonId = urlParams.has('lesson_id_update') ? decodeURIComponent(urlParams.get('lesson_id_update')) : '';
+			const topicName = urlParams.has('topic_name_update') ? decodeURIComponent(urlParams.get('topic_name_update')) : '';
+			const location = urlParams.has('location_schedule_update') ? decodeURIComponent(urlParams.get('location_schedule_update')) : '';
+			const startTime = urlParams.has('starttime_update') ? decodeURIComponent(urlParams.get('starttime_update')).replace(/\+.*/, '') : '';
+			const endTime = urlParams.has('endtime_update') ? decodeURIComponent(urlParams.get('endtime_update')).replace(/\+.*/, '') : '';
+
+			// Set values in form fields
+			document.getElementById('lesson_id_update').value = lessonId;
+			document.getElementById('topic_name_update').value = topicName;
+			document.getElementById('location_schedule_update').value = location;
+			document.getElementById('starttime_schedule_update').value = startTime;
+			document.getElementById('endtime_schedule_update').value = endTime;
+
 
             const updateButton = document.getElementById('update_schdedule_button');
             updateButton.addEventListener('click', function () {
@@ -204,77 +209,3 @@
 	<script src="script.js"></script>
 </body>
 </html>
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Update Schedule Form Page</title>
-    <script src="javascript.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">OKAY</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-    </nav>
-    <div class="container">
-        <form id="updateScheduleForm">
-            <div class="mb-3">
-                <p class="text-start" id="label_sid_update">Schedule ID:</p>
-                <p class="text-start" id="schedule_id_update"></p>
-            </div>
-            <div class="mb-3">
-                <label for="tutor_id_update" class="form-label">Tutor ID</label>
-                <input type="text" class="form-control" id="tutor_id_update">
-            </div>
-            <div class="mb-3">
-                <label for="lesson_id_update" class="form-label">Lesson ID</label>
-                <input type="text" class="form-control" id="lesson_id_update">
-            </div>
-            <div class="mb-3">
-                <label for="starttime_update" class="form-label">Start Time</label>
-                <input type="text" class="form-control" id="starttime_update">
-            </div>
-            <div class="mb-3">
-                <label for="endtime_update" class="form-label">End Time</label>
-                <input type="text" class="form-control" id="endtime_update">
-            </div>
-            <button type="button" id="back_update_schedule_button" class="btn btn-outline-secondary" onclick="return indexPage()">Back</button>
-            <button type="submit" class="btn btn-outline-secondary" id="update_schdedule_button">Update</button>
-        </form>
-    </div>
-    
-    <script>
-        window.onload = function () {
-            const form = document.getElementById('updateScheduleForm');
-
-            // Retrieve parameters from the URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const schedule_id = urlParams.get('schedule_id_update');
-            const tutor_id = urlParams.get('tutor_id_update');
-            const lesson_id = urlParams.get('lesson_id_update');
-            const starttime = urlParams.get('starttime_update');
-            const endtime = urlParams.get('endtime_update');
-            const formattedStartTime = decodeURIComponent(starttime).replace('T', ' ').replace('Z', '') || '';
-            const formattedEndTime = decodeURIComponent(endtime).replace('T', ' ').replace('Z', '') || '';
-
-            // Set values in the form fields
-            document.getElementById('schedule_id_update').textContent = schedule_id || '';
-            form.elements['tutor_id_update'].value = tutor_id || '';
-            form.elements['lesson_id_update'].value = lesson_id || '';
-            form.elements['starttime_update'].value = formattedStartTime || '';
-            form.elements['endtime_update'].value = formattedEndTime || '';
-
-            const updateButton = document.getElementById('update_schdedule_button');
-            updateButton.addEventListener('click', function () {
-                update_schedule(schedule_id);
-            });
-        };
-    </script>
-
-</body> -->
